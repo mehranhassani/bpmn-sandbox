@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   version: "1.0"
-  title: "PHP Docker"
+  title: "NodeJS Docker"
 host: "docker.unctad.org"
 basePath: "/v2016/06"
 paths:

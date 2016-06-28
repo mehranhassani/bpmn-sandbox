@@ -1,5 +1,6 @@
 # PHP hello docker
-HelloWorld REST service example with corresponding Dockerfile
+HelloWorld REST service example with corresponding Dockerfile.
+Stubs are generated and copied from PHP generator.
 
 ## Build docker image
 docker build -t krixerx/docker-php .

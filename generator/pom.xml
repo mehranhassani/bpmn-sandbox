@@ -25,7 +25,7 @@
 				<version>2.1.6</version>
 				<executions>
 					<execution>
-						<id>generate-server</id>
+						<id>generate-php-server</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate</goal>
@@ -33,9 +33,23 @@
 						<configuration>
 							<inputSpec>schemas/php-api.yaml</inputSpec>
 							<language>silex-PHP</language>
-							<output>${project.build.directory}/generated-sources</output>
+							<output>${project.build.directory}/generated-sources/php</output>
 							<apiPackage>${project.groupId}.php.server</apiPackage>
 							<modelPackage>${project.groupId}.php.model</modelPackage>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-nodejs-server</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>schemas/nodejs-api.yaml</inputSpec>
+							<language>nodejs-server</language>
+							<output>${project.build.directory}/generated-sources/nodejs</output>
+							<apiPackage>${project.groupId}.nodejs.server</apiPackage>
+							<modelPackage>${project.groupId}.nodejs.model</modelPackage>
 						</configuration>
 					</execution>
 				</executions>
