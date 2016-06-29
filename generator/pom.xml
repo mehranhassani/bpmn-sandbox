@@ -52,6 +52,20 @@
 							<modelPackage>${project.groupId}.nodejs.model</modelPackage>
 						</configuration>
 					</execution>
+					<execution>
+						<id>generate-python-server</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>schemas/python-api.yaml</inputSpec>
+							<language>python-flask</language>
+							<output>${project.build.directory}/generated-sources/python</output>
+							<apiPackage>${project.groupId}.python.server</apiPackage>
+							<modelPackage>${project.groupId}.python.model</modelPackage>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>

@@ -1,0 +1,28 @@
+---
+swagger: "2.0"
+info:
+  version: "1.0"
+  title: "Python Docker"
+host: "docker.unctad.org"
+basePath: "/v2016/06"
+paths:
+  /hello/{user}:
+    get:
+      tags:
+      - "default_controller"
+      description: "Returns a greeting to the user!"
+      operationId: "controllers.default_controller.hello_user_get"
+      parameters:
+      - name: "user"
+        in: "path"
+        description: "The name of the user to greet."
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Returns the greeting."
+          schema:
+            type: "string"
+        400:
+          description: "Invalid characters in \"user\" were provided."
+definitions: {}
