@@ -1,0 +1,22 @@
+version: '2'
+services:
+  java:
+    build: ./java
+    ports:
+    - "8080:8080"
+    image: krixerx/docker-java
+  nodejs:
+    build: ./nodejs
+    ports:
+    - "49160:8080"
+    image: krixerx/docker-nodejs
+  php:
+    build: ./php
+    ports:
+    - "80:80"
+    image: krixerx/docker-php
+  python:
+    build: ./python
+    ports:
+    - "5000:8080"
+    image: krixerx/docker-python

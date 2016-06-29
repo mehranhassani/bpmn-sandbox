@@ -1,36 +1,73 @@
 # Dockerized microservices 
-Application consists of multiple microservices which are programmed, launched and running separately.
+Application consists of multiple microservices which are programmed, launched and running separately.  
 All microservices implements and provides REST services defined by Swagger.
 
 ## Microservices
-1) Java
-2) PHP
-3) Phyton
-4) Node.js
+1. Java
+2. PHP
+3. Phyton
+4. Node.js
+
+## Install Docker
+* Go to website and download Docker: [https://www.docker.com/](https://www.docker.com/)
+* Install Docker as described in documentation: [https://docs.docker.com/](https://docs.docker.com/)
+
+
+## Build and launch docker images
+Docker images can be activated separately or together.  
+Docker images activation is described in docker-compose.yml
+
+**Launch all dockers with one command:**  
+Go to the folder /org.unctad.docker folder and run command:  
+_$ docker-compose up -d_
+
+**Check what processes are running:**  
+_$ docker ps_  
+Now you should see 4 running processes.
+If you are using Linux on your machine, just call http://localhost:[port]/[rest service].  
+While using windows then docker machine ip is not shared automatically.
+Try to find your docker machine ip by calling command _$ docker-machine env_.  
+
+**Current REST services:**
+* Java: http://192.168.99.100:8080/javarest/rest/hello/John
+* Python: http://192.168.99.100:5000/v2016/06/hello/John
+* PHP: http://192.168.99.100/hello/John
+* NodeJs: http://192.168.99.100:49160/v2016/06/hello/John
+
+**Deactivate dockers:**  
+_$ docker-compose down_
+
 
 ## General Docker commands
+**List Docker networks:**  
+_$ docker network ls_
 
-### List Docker networks
-docker network ls
+**List Docker images:**  
+_$ docker images_
 
-### List Docker images
-docker images
+**Remove Docker image:**  
+_$ docker rmi [imageId]_
 
-### List Docker processes
-docker ps
+**List Docker processes:**   
+_$ docker ps_
 
-### Environment settings
-docker-machine env
+**Stop deactivate docker on container:**  
+_$ docker stop [dockerId]_
 
-### Restart docker virtual machine
-docker-machine restart
+**Remove docker from container:**  
+_$ docker rm [dockerId]_
 
-### Enter into docker node shell
-docker exec -it ID /bin/bash
+**Environment settings:**    
+_$ docker-machine env_
 
-### Logging
-Check logging with command line:
-docker logs processId
+**Restart docker virtual machine:** 
+_$ docker-machine restart_
 
-## Swagger code generation
-Read more: http://swagger.io/open-source-integrations/
+**Enter into docker node shell:**  
+_$ docker exec -it [processId] /bin/bash_
+
+**Check logging with command line:**    
+_$ docker logs [processId]_
+
+## Swagger integrations
+Read more: [http://swagger.io/open-source-integrations/](http://swagger.io/open-source-integrations/)
