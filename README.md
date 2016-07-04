@@ -37,6 +37,18 @@ Try to find your docker machine ip by calling command _$ docker-machine env_.
 **Deactivate dockers:**  
 _$ docker-compose down_
 
+## Monitoring
+cAdvisor tool is used for monitoring.  
+Prometheus is used for metrics. You can define your own metrics.
+
+**Installing:**  
+_$ docker-compose -f docker-monitoring-compose.yml up -d_
+
+**Monitoring endpoint:**  
+http://192.168.99.100:8181/containers
+
+**Metrics endpoint:**  
+http://192.168.99.100:9090/graph
 
 ## General Docker commands
 **List Docker networks:**  
