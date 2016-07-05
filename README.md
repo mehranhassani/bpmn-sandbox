@@ -81,5 +81,11 @@ _$ docker exec -it [processId] /bin/bash_
 **Check logging with command line:**    
 _$ docker logs [processId]_
 
+**Delete all containers:**
+docker rm $(docker ps -a -q)
+
+**Delete all images:**
+_$ docker rmi $(docker images -q)_
+
 ## Swagger integrations
 Read more: [http://swagger.io/open-source-integrations/](http://swagger.io/open-source-integrations/)
