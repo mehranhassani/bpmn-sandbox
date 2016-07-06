@@ -3,20 +3,20 @@ services:
   java:
     build: ./java
     ports:
-    - "8080:8080"
+    - "6001:8080"
     image: krixerx/docker-java
   nodejs:
     build: ./nodejs
     ports:
-    - "49160:8080"
+    - "6002:8080"
     image: krixerx/docker-nodejs
   php:
     build: ./php
     ports:
-    - "80:80"
+    - "6003:80"
     image: krixerx/docker-php
   python:
     build: ./python
     ports:
-    - "5000:8080"
+    - "6004:8080"
     image: krixerx/docker-python
