@@ -12,6 +12,12 @@ All microservices implements and provides REST services defined by Swagger.
 * Go to website and download Docker: [https://www.docker.com/](https://www.docker.com/)
 * Install Docker as described in documentation: [https://docs.docker.com/](https://docs.docker.com/)
 
+**Check your Docker machine:**  
+_$ docker-machine ls_
+
+**If Docker machine does not exists, create new one:**  
+docker-machine create --driver virtualbox default
+
 
 ## Build and launch docker images
 Docker images can be activated separately or together.  
