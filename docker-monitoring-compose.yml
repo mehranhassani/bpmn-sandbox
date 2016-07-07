@@ -4,7 +4,7 @@ prometheus:
     - "9090:9090"
   links:
     - "exporter:export"
-    - "cadvisor:cadvisor"
+    #- "cadvisor:cadvisor"
   labels: 
          - "name=prometheus"
          - "description=Core of Promethues"
