@@ -7,6 +7,8 @@ All microservices implements and provides REST services defined by Swagger.
 2. PHP
 3. Phyton
 4. Node.js
+5. HAProxy
+6. Monitoring
 
 ## Install Docker
 * Go to website and download Docker: [https://www.docker.com/](https://www.docker.com/)
@@ -34,27 +36,8 @@ If you are using Linux on your machine, just call http://localhost:[port]/[rest 
 While using windows then docker machine ip is not shared automatically.
 Try to find your docker machine ip by calling command _$ docker-machine env_.  
 
-**Current REST services:**
-* Java: http://192.168.99.100:8080/javarest/rest/hello/John
-* Python: http://192.168.99.100:5000/v2016/06/hello/John
-* PHP: http://192.168.99.100/hello/John
-* NodeJs: http://192.168.99.100:49160/v2016/06/hello/John
-
 **Deactivate dockers:**  
 _$ docker-compose down_
-
-## Monitoring
-cAdvisor tool is used for monitoring.  
-Prometheus is used for metrics. You can define your own metrics.
-
-**Installing:**  
-_$ docker-compose -f docker-monitoring-compose.yml up -d_
-
-**Monitoring endpoint:**  
-http://192.168.99.100:8181/containers
-
-**Metrics endpoint:**  
-http://192.168.99.100:9090/graph
 
 ## General Docker commands
 **List Docker networks:**  
@@ -96,5 +79,5 @@ _$ docker rmi $(docker images -q)_
 ## Swagger integrations
 Read more: [http://swagger.io/open-source-integrations/](http://swagger.io/open-source-integrations/)
 
-##Jenkins  
-TODO soon
+##Test server  
+[http://unctad.redfunction.ee/](http://unctad.redfunction.ee/)
