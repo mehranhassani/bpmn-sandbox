@@ -25,6 +25,15 @@ services:
     ports:
     - "6005:8080"
     image: krixerx/docker-python
+  cadvisor:
+    image: google/cadvisor
+    ports:
+    - "8181:8080"
+    volumes:
+    - "/../:/rootfs:ro"
+    - "/var/run:/var/run:rw"
+    - "/sys:/sys:ro"
+    - "/var/lib/docker/:/var/lib/docker:ro"
   haproxy:
     build: ./haproxy
     image: krixerx/docker-haproxy
@@ -37,3 +46,4 @@ services:
     - nodejs
     - php
     - python
+    - cadvisor
