@@ -1,22 +1,39 @@
 version: "2"
 services:
+  nginx:
+    build: ./nginx
+    ports:
+    - "6006:80"
+    image: krixerx/docker-nginx
   java:
     build: ./java
     ports:
-    - "6001:8080"
+    - "6002:8080"
     image: krixerx/docker-java
   nodejs:
     build: ./nodejs
     ports:
-    - "6002:8080"
+    - "6003:8080"
     image: krixerx/docker-nodejs
   php:
     build: ./php
     ports:
-    - "6003:80"
+    - "6004:80"
     image: krixerx/docker-php
   python:
     build: ./python
     ports:
-    - "6004:8080"
+    - "6005:8080"
     image: krixerx/docker-python
+  haproxy:
+    build: ./haproxy
+    image: krixerx/docker-haproxy
+    ports:
+    - "6001:6001"
+    - "1936:1936"
+    links:
+    - nginx
+    - java
+    - nodejs
+    - php
+    - python
