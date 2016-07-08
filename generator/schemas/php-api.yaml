@@ -2,8 +2,8 @@ swagger: "2.0"
 info:
   version: "1.0"
   title: "PHP Docker"
-host: "docker.unctad.org"
-basePath: "/v2016/06"
+host: "http://unctad.redfunction.ee/"
+basePath: "/php/v2016/06"
 paths:
   /hello/{user}:
     get:

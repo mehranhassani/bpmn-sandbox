@@ -2,8 +2,8 @@ swagger: "2.0"
 info:
   version: "1.0.0"
   title: "Java Docker"
-host: "docker.unctad.org"
-basePath: "/v2016/06"
+host: "unctad.redfunction.ee"
+basePath: "/java/v2016/06"
 paths:
   /hello/{user}:
     get:

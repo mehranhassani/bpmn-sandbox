@@ -2,7 +2,7 @@ swagger: "2.0"
 info:
   version: "1.0"
   title: "Python Docker"
-host: "docker.unctad.org"
+host: "unctad.redfunction.ee"
 basePath: "/v2016/06"
 paths:
   /hello/{user}:

@@ -12,5 +12,5 @@ _$ docker build -t krixerx/docker-php ._
 _$ docker run -d -p 80:80 krixerx/docker-php_
 
 ## Check microservice
-[http://192.168.99.100/hello/John](http://192.168.99.100/hello/John)
+[http://192.168.99.100/php/v2016/06/hello/John](http://192.168.99.100/php/v2016/06/hello/John)
 

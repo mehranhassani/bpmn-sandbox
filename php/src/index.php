@@ -7,7 +7,7 @@ use Silex\Application;
 
 $app = new Silex\Application();
 
-$app->get('/hello/{user}', function(Application $app, Request $request, $user) {            
+$app->get('/v2016/06/hello/{user}', function(Application $app, Request $request, $user) {            
             return new Response('Hi '.$user.'! Im PHP Docker!');
             });
 $app->run();

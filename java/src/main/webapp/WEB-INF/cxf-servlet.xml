@@ -27,7 +27,7 @@
 		</property>
 	</bean>
 	
-	<jaxrs:server address="/rest" id="jaxwsService">
+	<jaxrs:server address="/v2016/06" id="jaxwsService">
 		<jaxrs:serviceBeans>
 			<ref bean="helloRestService" />
 		</jaxrs:serviceBeans>
