@@ -9,7 +9,8 @@ var serverPort = 8080;
 
 // swaggerRouter configuration
 var options = {
-  swaggerUi: '/swagger.json',
+  swaggerUi: '/node/docs',
+  apiDocs: '/node/api-docs',
   controllers: './controllers',
   useStubs: process.env.NODE_ENV === 'development' ? true : false // Conditionally turn on stubs (mock mode)
 };
@@ -30,7 +31,9 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
   app.use(middleware.swaggerRouter(options));
 
   // Serve the Swagger documents and Swagger UI
-  app.use(middleware.swaggerUi());
+
+  
+  app.use(middleware.swaggerUi(options));
 
   // Start the server
   http.createServer(app).listen(serverPort, function () {

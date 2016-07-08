@@ -27,7 +27,7 @@ VOLUME /root/.m2
 RUN cd /usr/src/app
 RUN mvn clean package
 
-RUN cp -a /usr/src/app/target/javarest.war /usr/local/tomcat/webapps/
+RUN cp -a /usr/src/app/target/java.war /usr/local/tomcat/webapps/
 
 RUN rm -rf /usr/src/app
 RUN rm -rf /usr/share/maven

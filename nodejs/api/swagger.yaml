@@ -3,8 +3,7 @@ swagger: "2.0"
 info:
   version: "1.0"
   title: "NodeJS Docker"
-host: "docker.unctad.org"
-basePath: "/v2016/06"
+basePath: "/node/v2016/06"
 paths:
   /hello/{user}:
     get:

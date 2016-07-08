@@ -37,4 +37,4 @@ _$ docker run -d -p 8080:8080 krixerx/docker-java_
 _$ docker ps_
 
 ## Check results
-Check url: [http://192.168.99.100:8080/javarest/rest/hello/John](http://192.168.99.100:8080/javarest/rest/hello/John)
+Check url: [http://192.168.99.100:8080/java/rest/hello/John](http://192.168.99.100:8080/java/rest/hello/John)
