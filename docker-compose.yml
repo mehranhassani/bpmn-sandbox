@@ -29,8 +29,6 @@ services:
     image: unctad/research-demo
     ports:
     - "49160:3000"
-    links:
-    - eregistrations-entities
   cadvisor:
     image: google/cadvisor
     ports:
