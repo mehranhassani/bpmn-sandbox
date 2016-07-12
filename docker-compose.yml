@@ -25,10 +25,6 @@ services:
     ports:
     - "6005:8080"
     image: krixerx/docker-python
-  research-demo2:
-    image: unctad/research-demo
-    ports:
-    - "6008:3000"
   cadvisor:
     image: google/cadvisor
     ports:
@@ -51,4 +47,3 @@ services:
     - php
     - python
     - cadvisor
-    - research-demo2
