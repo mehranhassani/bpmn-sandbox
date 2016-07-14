@@ -34,16 +34,6 @@ services:
     - "/var/run:/var/run:rw"
     - "/sys:/sys:ro"
     - "/var/lib/docker/:/var/lib/docker:ro"
-  mongodb:
-    ports:
-    - "27017:27017"
-    image: mongo
-  research-demo:
-    ports:
-    - "6010:3000"
-    image: unctad/research-demo
-    links:
-    - mongodb
   haproxy:
     build: ./haproxy
     image: krixerx/docker-haproxy
@@ -57,4 +47,3 @@ services:
     - php
     - python
     - cadvisor
-    - research-demo
