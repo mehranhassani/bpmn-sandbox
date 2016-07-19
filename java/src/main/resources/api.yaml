@@ -1,9 +1,15 @@
 swagger: "2.0"
 info:
-  version: "1.0.0"
+  version: "1.0"
   title: "Java Docker"
 host: "unctad.redfunction.ee"
 basePath: "/java/v2016/06"
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
 paths:
   /hello/{user}:
     get:
@@ -21,3 +27,56 @@ paths:
             type: string
         400:
           description: Invalid characters in "user" were provided.
+  /book:
+    get:
+      description: Returns a a book!
+      responses:
+        200:
+          description: Returns a book.
+          schema:
+            $ref: "#/definitions/Book"
+    post: 
+      description: "Creates a new book in the store. "
+      operationId: "saveBook"
+      parameters: 
+        - name: book
+          in: body
+          description: "save book"
+          required: true
+          schema: 
+            $ref: "#/definitions/Book"
+      responses: 
+        "200":
+          description: "book response"
+          schema: 
+            $ref: "#/definitions/Book"
+        default: 
+          description: "unexpected error"
+          schema: 
+            $ref: "#/definitions/ErrorModel"
+definitions:
+    Book:
+      type: "object"
+      required: 
+        - "title"
+      properties: 
+       id: 
+        type: string
+        description: "Unique ID for this book"
+       title:
+        type: string
+        description: "Book title"
+       author:
+        type: string
+        description: "Author name"
+    ErrorModel: 
+      type: "object"
+      required: 
+        - "code"
+        - "message"
+      properties: 
+        code: 
+          type: "integer"
+          format: "int32"
+        message: 
+          type: "string"
