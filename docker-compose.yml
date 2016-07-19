@@ -15,6 +15,11 @@ services:
     ports:
     - "6003:8080"
     image: krixerx/docker-nodejs
+  reactform:
+    build: ./reactform
+    ports:
+    - "6008:80"
+    image: krixerx/reactform
   php:
     build: ./php
     ports:
@@ -47,3 +52,4 @@ services:
     - php
     - python
     - cadvisor
+    - reactform
