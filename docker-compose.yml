@@ -10,32 +10,28 @@ services:
     ports:
     - "6002:8080"
     image: krixerx/docker-java
-  nodejs:
-    build: ./nodejs
+  formio:
+    build: ./formio
     ports:
-    - "6003:8080"
-    image: krixerx/docker-nodejs
-  reactform:
-    build: ./reactform
+    - "3001:3001"
+    image: krixerx/docker-formio
+    links:
+    - mongo
+  mongo:
     ports:
-    - "6008:80"
-    image: krixerx/reactform
-  php:
-    build: ./php
+    - "6008:27017"
+    image: mongo
+  camunda:
+    build: ./camunda
     ports:
-    - "6004:80"
-    image: krixerx/docker-php
-  python:
-    build: ./python
-    ports:
-    - "6005:8080"
-    image: krixerx/docker-python
+    - "6009:8080"
+    image: krixerx/docker-camunda
   cadvisor:
     image: google/cadvisor
     ports:
     - "6007:8080"
     volumes:
-    - "/../:/rootfs:ro"
+    - "../:/rootfs:ro"
     - "/var/run:/var/run:rw"
     - "/sys:/sys:ro"
     - "/var/lib/docker/:/var/lib/docker:ro"
@@ -48,8 +44,6 @@ services:
     links:
     - nginx
     - java
-    - nodejs
-    - php
-    - python
+    - formio
+    - camunda
     - cadvisor
-    - reactform

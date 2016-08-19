@@ -2,6 +2,7 @@ import React from 'react';
 import {render} from 'react-dom';
 import AwesomeComponent from './AwesomeComponent.jsx';
 import Swagger from 'swagger-client';
+import Formio from 'react-formio';
 
 class App extends React.Component {
 
@@ -12,7 +13,24 @@ class App extends React.Component {
         this.state = {id : ''};
         this.state = {title : ''};
         this.state = {author : ''};
+        this.processes = {};
     	var self = this;
+    	
+    	var items;
+    	var camClient = new CamSDK.Client({
+			mock: false,
+			apiUri: 'http://localhost:6009/engine-rest/'
+		});
+    	var processService = new camClient.resource('process-definition');
+    	var taskService = new camClient.resource('task');
+	    function loadProcesses() {
+	    	processService.list({}, function(err, results) {
+	          if (err) { throw err; }
+	          self.processes = results.items;
+	        });
+	      }
+	    loadProcesses();
+    	
 	    var client = new Swagger({
 		  url: 'https://api.swaggerhub.com/apis/krixerx/JavaAPI/1.0',
 		  success: function() {
@@ -26,6 +44,7 @@ class App extends React.Component {
 		    });
 		  }
 		});
+		
     }
     
     componentDidMount() {
@@ -56,6 +75,15 @@ class App extends React.Component {
             { this.state.book }   
               <div className="panel-heading clearfix">
 		        <h3 className="panel-title pull-left">Book Form</h3>
+		        
+		<ul>
+          <li><List items={this.processes}/></li>
+        </ul>
+
+
+		        
+		        
+		        <Formio src="http://localhost:3001/survey" />
 		        <div className="pull-right">
 		          <label className="text-inline">
 		            Id: <input type="text" value={this.state.id} onChange={this.handleChangeId.bind(this)}/>
