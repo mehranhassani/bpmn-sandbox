@@ -65,23 +65,40 @@ public class HelloWorldImpl implements DefaultApi {
 	}
 
 	@Override
-	public Response saveTaskSubmission(Submission body) {
+	public Response saveTaskSubmission(String taskId, String formData) {
 		System.out.println("Submission data received!");
-		System.out.println(body.toString());
+		System.out.println(formData);
 		
-		String uri = "http://formio:3001/survey/submission?dryrun=1'";
+		String uri = "http://formio:3001/survey/submission?dryrun=1";
 		List<Object> providers = new ArrayList<Object>();
 		providers.add(new JacksonJsonProvider());
-		WebClient client = WebClient.create(uri, providers).type(MediaType.APPLICATION_JSON)
+		WebClient client = WebClient.create(uri, providers, "test@test.com", "test", null).type(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON);
-		String json = client.post(body).readEntity(String.class);
-		System.out.println("formio json: " + json);
-
-		return null;
+		String validation = client.post(formData).readEntity(String.class);
+		System.out.println("formio validation: " + validation);
+		boolean isValid = Boolean.parseBoolean(validation);
+		if (isValid && completeTask(taskId)) {
+			Response response = Response.status(Status.OK).entity("true").build();
+			return response;
+		} else {
+			Response response = Response.status(Status.OK).entity("false").build();
+			return response;
+		}
 	}
 	
-	private void completeTask() {
-		
+	private boolean completeTask(String taskId) {
+		String uri = "http://camunda:8080/engine-rest/engine/default/task/" + taskId + "/complete";
+		List<Object> providers = new ArrayList<Object>();
+		providers.add( new JacksonJsonProvider() );
+		WebClient client = WebClient.create(uri, providers).accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
+		Response response = client.post("{\"variables\":{Form123Submission: {}}}");
+		if (response.getStatus() == 204) {
+			LOGGER.log(Level.WARNING, "Task sumbitted, taskId: " + taskId);
+			return true;
+		} else {
+			LOGGER.log(Level.WARNING, "Task not sumbitted, taskId: " + taskId);
+			return false;
+		}
 	}
 
 	@Override

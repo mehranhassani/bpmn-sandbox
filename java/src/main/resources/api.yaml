@@ -86,17 +86,20 @@ paths:
           description: "Resource not found."  
         500:
           description: "An error has occurred."
-  /task/submission:
+  /task/submission/{taskId}:
     post: 
       description: "Validates and saves the data"
       operationId: "saveTaskSubmission"
       parameters: 
-        - name: body
-          in: body
+        - name: taskId
+          in: path
+          type: string
+          required: true
+          description: "The task ID."
+        - name: formData
+          in: formData
           description: "data model"
           required: true
-          schema: 
-            $ref: "#/definitions/Submission"
       responses: 
         "201":
           description: "The resource has been created."
@@ -104,7 +107,6 @@ paths:
           description: "An error has occured trying to create the resource."
         "401":
           description: "Unauthorized. Note that anonymous submissions are *enabled* by default."
-  /task/submission/{taskId}:
     get: 
       description: "Return a specific submission data."
       operationId: "Gets task submission"

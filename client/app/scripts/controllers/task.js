@@ -14,8 +14,14 @@ angular.module('angularclientApp')
 	  $scope.taskId = $routeParams.taskid;
 	  $scope.data = {};
 	  $scope.path = {};
+	  $scope.subPath = '';
 	  loadTaskForm($scope.taskId);
-	  $scope.formioForm = {};
+	  $scope.form = {};
+	  loadForm();
+	  
+	  $scope.$on('formLoad', function(err, submission) {
+		  console.log(err);
+	  });
 	  
 	  $scope.goNextTask = function(taskId) {
 		  var data = {"id":taskId.taskId,
@@ -23,15 +29,21 @@ angular.module('angularclientApp')
 		  taskService.submitForm(data);
 		  $location.path('/');
 	  }
-	  
-	  $scope.myHTML =
-		     '<formio form-action="http://localhost:6002/java/v2016/06/task/submission" src="\'http://localhost:3001/survey\'"></formio>';
+	  	  
+	  function loadForm() {
+		  var url = 'http://localhost:3001/survey';
+	      var formKey = '';
+	      $http.get(url).then(function(response){ 
+	    	  $scope.form = response.data;
+	      });          
+	  };
 	  
 	    
 	  function loadTaskForm(taskId) {
 		  var url = 'http://localhost:6001/java/v2016/06/task/' + taskId;
 	      var formKey = '';
 	      $http.get(url).then(function(response){ 
+	    	  $scope.subPath = 'http://localhost:6002/java/v2016/06/task/submission/' + taskId;
 	    	  $scope.path = 'http://localhost:3001/' + response.data.path;
 	      });          
 	  };
