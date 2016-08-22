@@ -3,7 +3,7 @@
 	<table>
 		<div ng-repeat="process in processes"
 			data-process-id="{{ process.id }}"
-			data-process-key="{{ process.key }}" ng-click="startProcess($event)">
+			data-process-key="{{ process.key }}" ng-click="startProcess(process.id)">
 			<a>{{ (process.name || process.id) }}</a>
 			<a ng-if="process.description">{{ process.description }}</a>
 		</div>

@@ -13,6 +13,7 @@ angular.module('angularclientApp')
 	  
 	  $scope.taskId = $routeParams.taskid;
 	  $scope.data = {};
+	  $scope.path = {};
 	  loadTaskForm($scope.taskId);
 	  $scope.formioForm = {};
 	  
@@ -22,15 +23,16 @@ angular.module('angularclientApp')
 		  taskService.submitForm(data);
 		  $location.path('/');
 	  }
+	  
+	  $scope.myHTML =
+		     '<formio form-action="http://localhost:6002/java/v2016/06/task/submission" src="\'http://localhost:3001/survey\'"></formio>';
+	  
 	    
 	  function loadTaskForm(taskId) {
-		  var url = 'http://localhost:6009/engine-rest/task/' + taskId;
+		  var url = 'http://localhost:6001/java/v2016/06/task/' + taskId;
 	      var formKey = '';
 	      $http.get(url).then(function(response){ 
-	    	  formKey = response.data.formKey;
-	    	  $http.get('http://localhost:3001/' + formKey).then(function(response){ 
-	            $scope.form = response.data;
-	          });
+	    	  $scope.path = 'http://localhost:3001/' + response.data.path;
 	      });          
 	  };
   });

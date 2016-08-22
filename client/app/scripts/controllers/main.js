@@ -30,18 +30,11 @@ angular.module('angularclientApp')
 		}
 		loadTasks();
 	    
-	    $scope.startProcess = function($event) {
-	    	var processId = $($event.currentTarget).attr('data-process-id');
-	    	var processKey = $($event.currentTarget).attr('data-process-key');
-	    	var data = {"id": processId, "key": processKey};
-	    	processService.start(data, function(err, results) {
-	    		if (err) { throw err; }
-	    		taskService.list({"processInstanceId":results.id}, function(err, results) {
-	    			var taskId = results._embedded.task[0].id;
-	    			$location.path('/task/' + taskId);
-	    			$scope.$apply();
-	    		});
-	    	});
+	    $scope.startProcess = function(processId) {
+	    	var url = 'http://localhost:6001/java/v2016/06/engine-rest/engine/default/process-definition/' + processId + '/start';
+		      $http.post(url).then(function(response){ 
+		    	  $location.path('/task/' + response.data.id);
+		      }); 
 	    }
 	    
   });
