@@ -68,7 +68,7 @@ module.exports = function(router) {
   ];
 
   // Register an exists endpoint to see if a submission exists.
-  router.get('/formio/form/:formId/exists', function(req, res, next) {
+  router.get('/form/:formId/exists', function(req, res, next) {
     // First load the form.
     router.formio.cache.loadCurrentForm(req, function(err, form) {
       if (err) {

@@ -196,7 +196,7 @@ module.exports = function(router) {
             if (
               action.condition &&
               action.condition.field &&
-              (action.condition.eq === 'equals') &&
+              (action.condition.eq === 'equals') ===
               (req.body.data[action.condition.field] !== action.condition.value)
             ) {
               execute = false;
@@ -473,7 +473,7 @@ module.exports = function(router) {
   };
 
   // Return a list of available actions.
-  router.get('/formio/form/:formId/actions', function(req, res, next) {
+  router.get('/form/:formId/actions', function(req, res, next) {
     var result = [];
 
     // Add an action to the results array.
@@ -512,7 +512,7 @@ module.exports = function(router) {
   });
 
   // Return a list of available actions.
-  router.get('/formio/form/:formId/actions/:name', function(req, res, next) {
+  router.get('/form/:formId/actions/:name', function(req, res, next) {
     if (ActionIndex.actions[req.params.name]) {
       var action = ActionIndex.actions[req.params.name];
       action.info(req, res, function(err, info) {
