@@ -444,7 +444,7 @@ module.exports = function (grunt) {
         'compass'
       ],
       dist: [
-        'compass:dist',
+        //'compass:dist',
         'imagemin',
         'svgmin'
       ]
@@ -483,10 +483,10 @@ module.exports = function (grunt) {
   grunt.registerTask('test', [
     'clean:server',
     'wiredep',
-    'concurrent:test',
+    //'concurrent:test',
     'postcss',
-    'connect:test',
-    'karma'
+    'connect:test'
+   // 'karma'
   ]);
 
   grunt.registerTask('build', [
@@ -510,7 +510,7 @@ module.exports = function (grunt) {
   grunt.registerTask('default', [
     'newer:jshint',
     'newer:jscs',
-    'test',
+    //'test',
     'build'
   ]);
 };

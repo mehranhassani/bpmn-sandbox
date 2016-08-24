@@ -5,6 +5,11 @@ services:
     ports:
     - "6006:80"
     image: krixerx/docker-nginx
+  client:
+    build: ./client
+    ports:
+    - "6005:80"
+    image: krixerx/docker-client
   java:
     build: ./java
     ports:
@@ -43,6 +48,7 @@ services:
     - "1936:1936"
     links:
     - nginx
+    - client
     - java
     - formio
     - camunda

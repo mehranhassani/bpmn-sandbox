@@ -26,7 +26,7 @@
       <bpmn:incoming>SequenceFlow_1b5ygv7</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1eq6uq9</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Task_Accept" name="Accept" camunda:formKey="survey_reviewer">
+    <bpmn:userTask id="Task_Accept" name="Accept" camunda:formKey="surveyreviewer">
       <bpmn:incoming>SequenceFlow_1eq6uq9</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_11ptvo4</bpmn:outgoing>
     </bpmn:userTask>
@@ -34,10 +34,10 @@
     <bpmn:sequenceFlow id="SequenceFlow_1eq6uq9" sourceRef="Task_FillData" targetRef="Task_Accept" />
     <bpmn:sequenceFlow id="SequenceFlow_11ptvo4" sourceRef="Task_Accept" targetRef="ExclusiveGateway_07myobn" />
     <bpmn:sequenceFlow id="SequenceFlow_1f52sjf" sourceRef="ExclusiveGateway_07myobn" targetRef="IntermediateThrowEvent_19aifv6">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[${"true".equals(jsonSubmission.prop("accepted").getValue())}]]></bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[${"true".equals(accepted)}]]></bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_1b5ygv7" sourceRef="ExclusiveGateway_07myobn" targetRef="Task_FillData">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[${"false".equals(jsonSubmission.prop("accepted").getValue())}]]></bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[${"false".equals(accepted)}]]></bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="ExclusiveGateway_07myobn" name="IsFormAccepted">
       <bpmn:incoming>SequenceFlow_11ptvo4</bpmn:incoming>

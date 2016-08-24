@@ -42,11 +42,10 @@ module.exports = function(config) {
       'bower_components/angular-file-saver/dist/angular-file-saver.bundle.js',
       'bower_components/angular-ui-select/dist/select.js',
       'bower_components/ng-formio/dist/formio.js',
-      'bower_components/camunda-bpm-sdk-js/camunda-bpm-sdk.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       'app/scripts/**/*.js',
-      'test/mock/**/*.js',
+      //'test/mock/**/*.js',
       'test/spec/**/*.js'
     ],
 

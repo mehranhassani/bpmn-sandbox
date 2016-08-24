@@ -12,7 +12,6 @@ import org.unctad.docker.java.model.Book;
 import org.unctad.docker.java.model.Count;
 import org.unctad.docker.java.model.ProcessDefinition;
 import org.unctad.docker.java.model.ProcessTask;
-import org.unctad.docker.java.model.Submission;
 import org.unctad.docker.java.server.DefaultApi;
 import java.util.logging.Level;
 
@@ -72,12 +71,12 @@ public class HelloWorldImpl implements DefaultApi {
 		String uri = "http://formio:3001/survey/submission?dryrun=1";
 		List<Object> providers = new ArrayList<Object>();
 		providers.add(new JacksonJsonProvider());
-		WebClient client = WebClient.create(uri, providers, "test@test.com", "test", null).type(MediaType.APPLICATION_JSON)
+		WebClient client = WebClient.create(uri, providers).type(MediaType.APPLICATION_FORM_URLENCODED)
 				.accept(MediaType.APPLICATION_JSON);
 		String validation = client.post(formData).readEntity(String.class);
 		System.out.println("formio validation: " + validation);
 		boolean isValid = Boolean.parseBoolean(validation);
-		if (isValid && completeTask(taskId)) {
+		if (isValid && completeTask(taskId, formData)) {
 			Response response = Response.status(Status.OK).entity("true").build();
 			return response;
 		} else {
@@ -86,19 +85,22 @@ public class HelloWorldImpl implements DefaultApi {
 		}
 	}
 	
-	private boolean completeTask(String taskId) {
+	private boolean completeTask(String taskId, String formData) {
 		String uri = "http://camunda:8080/engine-rest/engine/default/task/" + taskId + "/complete";
 		List<Object> providers = new ArrayList<Object>();
-		providers.add( new JacksonJsonProvider() );
+		providers.add(new JacksonJsonProvider());
 		WebClient client = WebClient.create(uri, providers).accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
-		Response response = client.post("{\"variables\":{Form123Submission: {}}}");
+		String body = convertToCamundaJson(formData);
+		if (body == null) {
+			return false;
+		}
+		Response response = client.post(body);
 		if (response.getStatus() == 204) {
 			LOGGER.log(Level.WARNING, "Task sumbitted, taskId: " + taskId);
 			return true;
-		} else {
-			LOGGER.log(Level.WARNING, "Task not sumbitted, taskId: " + taskId);
-			return false;
 		}
+		LOGGER.log(Level.WARNING, "Task not sumbitted, taskId: " + taskId);
+		return false;
 	}
 
 	@Override
@@ -111,7 +113,12 @@ public class HelloWorldImpl implements DefaultApi {
 				providers.add( new JacksonJsonProvider() );
 				WebClient client = WebClient.create(uri, providers).accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
 				String formIoResponse = client.get().readEntity(String.class);	
-				Response response = Response.status(Status.OK).entity(formIoResponse).build();
+				String formVariables = getCamundaTaskFormVariables(taskId);
+				JSONObject obj = new JSONObject(formIoResponse);
+				JSONObject variables = new JSONObject();
+				variables.put("data", new JSONObject(convertFromCamundaJson(formVariables)));
+				obj.accumulate("variables", variables);
+				Response response = Response.status(Status.OK).entity(obj.toString()).build();
 				return response;
 			} else {
 				LOGGER.log(Level.WARNING, "Task form not found, taskId: " + taskId);
@@ -133,6 +140,15 @@ public class HelloWorldImpl implements DefaultApi {
 		String json = client.get().readEntity(String.class);
 		JSONObject resultObject = new JSONObject(json);
 		return resultObject.getString("key");
+	}
+	
+	private String getCamundaTaskFormVariables(String taskId) throws JSONException {
+		String uri = "http://camunda:8080/engine-rest/engine/default/task/" + taskId + "/form-variables";
+		List<Object> providers = new ArrayList<Object>();
+		providers.add( new JacksonJsonProvider() );
+		WebClient client = WebClient.create(uri, providers).accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
+		String json = client.get().readEntity(String.class);
+		return json;
 	}
 
 	@Override
@@ -204,6 +220,54 @@ public class HelloWorldImpl implements DefaultApi {
 			return jsonObject.getString("id");
 		}
 		return null;
+	}
+	
+	public static void main(String[] args) throws JSONException {
+		String formData = convertToCamundaJson("{\"data\"={\"eesnimi\":\"wjjjcccjj\", \"perenimi\":\"wjeeeecjj\",\"accept\":{\"\":true}}}");
+		System.out.println(formData);
+		String camundaJson = "{\"perenimi\":{\"type\":\"String\",\"value\":\"Savi\",\"valueInfo\":{}},\"eesnimi\":{\"type\":\"String\",\"value\":\"Edgar\",\"valueInfo\":{}},\"requestor\":{\"type\":\"Null\",\"value\":null,\"valueInfo\":{}}}";
+		System.out.println(convertFromCamundaJson(camundaJson));
+		JSONObject variables = new JSONObject();
+		variables.put("data", new JSONObject(convertFromCamundaJson(camundaJson)));
+		System.out.println(variables.toString());
+	}
+	
+	private static String convertToCamundaJson(String json) {
+		try {
+			JSONObject root = new JSONObject();
+			JSONObject variables = new JSONObject();
+			JSONObject obj = new JSONObject(json);
+			JSONObject data = obj.getJSONObject("data");
+			for (int i = 0; i < data.length(); i++) {
+				String key = (String) data.names().get(i);
+				Object value = data.get(key);
+				JSONObject subVarValue = new JSONObject();
+				subVarValue.put("value", value);
+				subVarValue.put("type", "string");
+				variables.accumulate(key, subVarValue);
+			}
+			root.put("variables", variables);
+			return root.toString();
+		} catch (JSONException ex) {
+			LOGGER.log(Level.SEVERE, ex.getMessage());
+			return null;
+		}
+	}
+	
+	private static String convertFromCamundaJson(String camundaJson) {
+		JSONObject root = new JSONObject();
+		try {
+			JSONObject data = new JSONObject(camundaJson);
+			for (int i = 0; i < data.length(); i++) {
+				String key = (String) data.names().get(i);
+				JSONObject valueObject = (JSONObject) data.get(key);
+				Object value = valueObject.get("value");
+				root.accumulate(key, value);
+			}
+		} catch (JSONException ex) {
+			LOGGER.log(Level.SEVERE, ex.getMessage());
+		}
+		return root.toString();
 	}
 
 }

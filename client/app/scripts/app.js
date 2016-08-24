@@ -1,10 +1,5 @@
 'use strict';
 
-var camClient = new CamSDK.Client({
-	mock: false,
-	apiUri: 'http://localhost:6002/java/v2016/06/engine-rest/'
-});
-
 /**
  * @ngdoc overview
  * @name angularclientApp

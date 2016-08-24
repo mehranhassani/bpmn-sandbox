@@ -96,7 +96,7 @@ paths:
           type: string
           required: true
           description: "The task ID."
-        - name: formData
+        - name: data
           in: formData
           description: "data model"
           required: true
