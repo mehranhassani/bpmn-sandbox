@@ -1,7 +1,7 @@
 {
   "port": 3001,
-  "appPort": 80,
-  "host": "unctad.redfunction.ee",
+  "appPort": 8080,
+  "host": "localhost:3001",
   "protocol": "http",
   "domain": "http://unctad.redfunction.ee",
   "basePath": "",
