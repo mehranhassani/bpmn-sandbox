@@ -14,7 +14,7 @@ angular.module('angularclientApp')
 	  $scope.form = {};
 	  
 	  $scope.$on('formSubmit', function(err, submission) {
-		  var url = 'http://unctad.redfunction.ee/java/v2016/06/task/submission/' + $scope.taskId;
+		  var url = restApi + '/task/submission/' + $scope.taskId;
 		  $http.post(url,submission).then(function(response){ 
 			  console.log(response);
 			  $location.path('/');
@@ -22,7 +22,7 @@ angular.module('angularclientApp')
 	  });
 	    
 	  function loadTaskFormAndData(taskId) {
-		  var url = 'http://unctad.redfunction.ee/java/v2016/06/task/' + taskId;
+		  var url = restApi + '/task/' + taskId;
 	      $http.get(url).then(function(response){ 
 	    	  $scope.form = response.data;
 	    	  $scope.submission = response.data.variables;

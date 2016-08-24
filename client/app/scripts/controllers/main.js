@@ -11,7 +11,7 @@ angular.module('angularclientApp')
   .controller('MainCtrl', function ($scope,$location,$http) {
 	  
 		function loadProcesses() {
-			var url = 'http://unctad.redfunction.ee/java/v2016/06/engine-rest/engine/default/process-definition';
+			var url = restApi + '/engine-rest/engine/default/process-definition';
 			$http.get(url).then(function(response) {
 				$scope.processes = response.data;
 			});
@@ -20,7 +20,7 @@ angular.module('angularclientApp')
 		loadProcesses();
 	    
 		function loadTasks() {
-			  var url = 'http://unctad.redfunction.ee/java/v2016/06/engine-rest/engine/default/task';
+			  var url = restApi + '/engine-rest/engine/default/task';
 		      $http.get(url).then(function(response){ 
 		    	  $scope.tasks = response.data;
 		      }); 
@@ -28,7 +28,7 @@ angular.module('angularclientApp')
 		loadTasks();
 	    
 	    $scope.startProcess = function(processId) {
-	    	var url = 'http://unctad.redfunction.ee/java/v2016/06/engine-rest/engine/default/process-definition/' + processId + '/start';
+	    	var url = restApi + '/engine-rest/engine/default/process-definition/' + processId + '/start';
 		      $http.post(url).then(function(response){ 
 		    	  $location.path('/task/' + response.data.id);
 		      }); 

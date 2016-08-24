@@ -15,6 +15,10 @@ services:
     ports:
     - "6002:8080"
     image: krixerx/docker-java
+  mongo:
+    ports:
+    - "6008:27017"
+    image: mongo
   formio:
     build: ./formio
     ports:
@@ -22,10 +26,6 @@ services:
     image: krixerx/docker-formio
     links:
     - mongo
-  mongo:
-    ports:
-    - "6008:27017"
-    image: mongo
   camunda:
     build: ./camunda
     ports:
