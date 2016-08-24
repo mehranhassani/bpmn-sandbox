@@ -117,17 +117,17 @@ module.exports = function(config) {
 
       // The current user handler.
       if (!router.formio.hook.invoke('init', 'logout', router.formio)) {
-        router.get('/logout', router.formio.auth.logout);
+        router.get('/formio/logout', router.formio.auth.logout);
       }
 
       // The current user handler.
       if (!router.formio.hook.invoke('init', 'current', router.formio)) {
-        router.get('/current', router.formio.auth.currentUser);
+        router.get('/formio/current', router.formio.auth.currentUser);
       }
 
       // The access handler.
       if (!router.formio.hook.invoke('init', 'access', router.formio)) {
-        router.get('/access', router.formio.middleware.accessHandler);
+        router.get('/formio/access', router.formio.middleware.accessHandler);
       }
 
       // Authorize all urls based on roles and permissions.
@@ -186,7 +186,7 @@ module.exports = function(config) {
 
         // Allow exporting capabilities.
         router.formio.exporter = require('./src/templates/export')(router.formio);
-        router.get('/export', function(req, res, next) {
+        router.get('/formio/export', function(req, res, next) {
           var exportOptions = router.formio.hook.alter('exportOptions', {}, req, res);
           router.formio.exporter.export(exportOptions, function(err, _export) {
             if (err) {
@@ -199,7 +199,7 @@ module.exports = function(config) {
         });
 
         // Return the form components.
-        router.get('/form/:formId/components', function(req, res, next) {
+        router.get('/formio/form/:formId/components', function(req, res, next) {
           router.formio.resources.form.model.findOne({_id: req.params.formId}, function(err, form) {
             if (err) {
               return next(err);
@@ -239,14 +239,14 @@ module.exports = function(config) {
 
         var swagger = require('./src/util/swagger');
         // Show the swagger for the whole site.
-        router.get('/spec.json', function(req, res, next) {
+        router.get('/formio/spec.json', function(req, res, next) {
           swagger(req, router, function(spec) {
             res.json(spec);
           });
         });
 
         // Show the swagger for specific forms.
-        router.get('/form/:formId/spec.json', function(req, res, next) {
+        router.get('/formio/form/:formId/spec.json', function(req, res, next) {
           swagger(req, router, function(spec) {
             res.json(spec);
           });

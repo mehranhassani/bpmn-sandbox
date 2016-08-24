@@ -10,7 +10,7 @@ module.exports = function(router) {
   var hook = require('../util/hook')(router.formio);
 
   // Mount the export endpoint using the url.
-  router.get('/form/:formId/export', function(req, res, next) {
+  router.get('/formio/form/:formId/export', function(req, res, next) {
     if (!_.has(req, 'token') || !_.has(req, 'token.user._id')) {
       return res.sendStatus(400);
     }
