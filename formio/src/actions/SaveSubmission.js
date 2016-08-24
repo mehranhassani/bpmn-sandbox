@@ -50,7 +50,7 @@ module.exports = function(router) {
         key: 'resource',
         title: 'Save submission to',
         placeholder: 'This form',
-        basePath: hook.alter('path', '/form', req),
+        basePath: hook.alter('path', '/formio/form', req),
         form: req.params.formId,
         required: false
       }
