@@ -1,9 +1,9 @@
 {
-  "port": 3001,
-  "appPort": 8080,
-  "host": "localhost:3001",
+  "port": 80,
+  "appPort": 80,
+  "host": "formio",
   "protocol": "http",
-  "domain": "http://localhost:3001",
+  "domain": "formio",
   "basePath": "formio",
   "mongo": "mongodb://mongo:27017/formioapp",
   "mongoSecret": "--- change me now ---",
