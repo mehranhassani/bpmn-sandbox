@@ -8,22 +8,21 @@ RUN apt-get update && \
 
 # Copy angular files
 COPY . /tmp
+RUN cd /tmp
+WORKDIR /tmp
 
-# Installation
-#RUN curl -sL https://deb.nodesource.com/setup | bash -
-
-RUN cd /tmp && npm install npm -g
+RUN npm install npm -g
 RUN npm install -g bower
+#RUN bower install -g
 RUN npm install -g grunt
 RUN npm install -g grunt-cli
 RUN gem install sass
 RUN gem install compass
-RUN npm cache clean
+#RUN npm cache clean
+RUN bower install --allow-root --config.interactive=false
 RUN npm install
-#RUN bower install -g
 
 # Building
-WORKDIR /tmp
 RUN grunt build
 RUN cp -R /tmp/dist/. /usr/share/nginx/html
 RUN rm -rf /tmp
