@@ -49,7 +49,7 @@ module.exports = function(options) {
   });
 
   // Mount the client application.
-  app.use('/', express.static(__dirname + '/client/dist'));
+  app.use('/formio', express.static(__dirname + '/client/dist'));
 
   // Load the form.io server.
   var server = options.server || require('./index')(config);
