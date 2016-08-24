@@ -3,7 +3,7 @@
   "appPort": 8080,
   "host": "unctad.redfunction.ee",
   "protocol": "http",
-  "domain": "http://unctad.redfunction.ee/formio",
+  "domain": "http://unctad.redfunction.ee",
   "basePath": "/formio",
   "mongo": "mongodb://mongo:27017/formioapp",
   "mongoSecret": "--- change me now ---",
