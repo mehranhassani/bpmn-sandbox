@@ -4,7 +4,7 @@
   "host": "localhost:3001",
   "protocol": "http",
   "domain": "http://localhost:3001",
-  "basePath": "",
+  "basePath": "/formio",
   "mongo": "mongodb://mongo:27017/formioapp",
   "mongoSecret": "--- change me now ---",
   "reservedForms": ["submission", "exists", "export", "role", "current", "logout", "import", "form", "access"],
