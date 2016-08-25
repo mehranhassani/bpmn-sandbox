@@ -68,7 +68,7 @@ public class HelloWorldImpl implements DefaultApi {
 		System.out.println("Submission data received!");
 		System.out.println(formData);
 		
-		String uri = "http://formio:3001/survey/submission?dryrun=1";
+		String uri = "http://haproxy:6001/formio/survey/submission?dryrun=1";
 		List<Object> providers = new ArrayList<Object>();
 		providers.add(new JacksonJsonProvider());
 		WebClient client = WebClient.create(uri, providers).type(MediaType.APPLICATION_FORM_URLENCODED)
@@ -108,7 +108,7 @@ public class HelloWorldImpl implements DefaultApi {
 		try {
 			String taskKey = getCamundaTaskKey(taskId);
 			if (taskKey != null) {
-				String uri = "http://formio:3001/" + taskKey;
+				String uri = "http://haproxy:6001/formio/" + taskKey;
 				List<Object> providers = new ArrayList<Object>();
 				providers.add( new JacksonJsonProvider() );
 				WebClient client = WebClient.create(uri, providers).accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
