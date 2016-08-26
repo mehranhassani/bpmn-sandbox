@@ -127,49 +127,6 @@ paths:
           description: "Resource not found."  
         500:
           description: "An error has occurred."
-  /hello/{user}:
-    get:
-      description: Returns a greeting to the user!
-      parameters:
-        - name: user
-          in: path
-          type: string
-          required: true
-          description: The name of the user to greet.
-      responses:
-        200:
-          description: Returns the greeting.
-          schema:
-            type: string
-        400:
-          description: Invalid characters in "user" were provided.
-  /book:
-    get:
-      description: Returns a a book!
-      responses:
-        200:
-          description: Returns a book.
-          schema:
-            $ref: "#/definitions/Book"
-    post: 
-      description: "Creates a new book in the store. "
-      operationId: "saveBook"
-      parameters: 
-        - name: book
-          in: body
-          description: "save book"
-          required: true
-          schema: 
-            $ref: "#/definitions/Book"
-      responses: 
-        "200":
-          description: "book response"
-          schema: 
-            $ref: "#/definitions/Book"
-        default: 
-          description: "unexpected error"
-          schema: 
-            $ref: "#/definitions/ErrorModel"
 definitions:
     ProcessDefinition:
       type: "object"
@@ -218,20 +175,6 @@ definitions:
           type: string
     Submission:
       type: "object"
-    Book:
-      type: "object"
-      required: 
-        - "title"
-      properties: 
-       id: 
-        type: string
-        description: "Unique ID for this book"
-       title:
-        type: string
-        description: "Book title"
-       author:
-        type: string
-        description: "Author name"
     ErrorModel: 
       type: "object"
       required: 

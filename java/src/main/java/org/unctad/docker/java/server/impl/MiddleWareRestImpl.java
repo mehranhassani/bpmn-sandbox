@@ -7,12 +7,12 @@ import java.util.logging.Logger;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import org.unctad.docker.java.model.Book;
 import org.unctad.docker.java.model.Count;
 import org.unctad.docker.java.model.ProcessDefinition;
 import org.unctad.docker.java.model.ProcessTask;
 import org.unctad.docker.java.server.DefaultApi;
+import org.unctad.docker.java.server.utils.Utils;
+
 import java.util.logging.Level;
 
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
@@ -21,41 +21,10 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.apache.cxf.jaxrs.client.WebClient;
 
-public class HelloWorldImpl implements DefaultApi {
+public class MiddleWareRestImpl implements DefaultApi {
 	
 	
-	private static final Logger LOGGER = Logger.getLogger(HelloWorldImpl.class.getName());
-	private Book book;
-	
-	private Book getBook() {
-		if (book == null) {
-			book = new Book();
-			book.setId("123");
-			book.setAuthor("John McClain");
-			book.setTitle("Die Hard");
-		}
-		return book;
-	}
-
-	@Override
-	public Response helloUserGet(String user) {
-		String message = "Hi " + user + "! My name is Java Docker.";
-		Response response = Response.status(Status.OK).entity(message).build();
-		return response;
-	}
-
-	@Override
-	public Response bookGet() {
-		Response response = Response.status(Status.OK).entity(getBook()).build();
-		return response;
-	}
-
-	@Override
-	public Response saveBook(Book book) {
-		this.book = book;
-		Response response = Response.status(Status.OK).entity(getBook()).build();
-		return response;
-	}
+	private static final Logger LOGGER = Logger.getLogger(MiddleWareRestImpl.class.getName());
 
 	@Override
 	public Response getsTaskSubmission(String taskId) {
@@ -90,7 +59,7 @@ public class HelloWorldImpl implements DefaultApi {
 		List<Object> providers = new ArrayList<Object>();
 		providers.add(new JacksonJsonProvider());
 		WebClient client = WebClient.create(uri, providers).accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
-		String body = convertToCamundaJson(formData);
+		String body = Utils.convertToCamundaJson(formData);
 		if (body == null) {
 			return false;
 		}
@@ -116,7 +85,7 @@ public class HelloWorldImpl implements DefaultApi {
 				String formVariables = getCamundaTaskFormVariables(taskId);
 				JSONObject obj = new JSONObject(formIoResponse);
 				JSONObject variables = new JSONObject();
-				variables.put("data", new JSONObject(convertFromCamundaJson(formVariables)));
+				variables.put("data", new JSONObject(Utils.convertFromCamundaToJson(formVariables)));
 				obj.accumulate("variables", variables);
 				Response response = Response.status(Status.OK).entity(obj.toString()).build();
 				return response;
@@ -220,54 +189,6 @@ public class HelloWorldImpl implements DefaultApi {
 			return jsonObject.getString("id");
 		}
 		return null;
-	}
-	
-	public static void main(String[] args) throws JSONException {
-		String formData = convertToCamundaJson("{\"data\"={\"eesnimi\":\"wjjjcccjj\", \"perenimi\":\"wjeeeecjj\",\"accept\":{\"\":true}}}");
-		System.out.println(formData);
-		String camundaJson = "{\"perenimi\":{\"type\":\"String\",\"value\":\"Savi\",\"valueInfo\":{}},\"eesnimi\":{\"type\":\"String\",\"value\":\"Edgar\",\"valueInfo\":{}},\"requestor\":{\"type\":\"Null\",\"value\":null,\"valueInfo\":{}}}";
-		System.out.println(convertFromCamundaJson(camundaJson));
-		JSONObject variables = new JSONObject();
-		variables.put("data", new JSONObject(convertFromCamundaJson(camundaJson)));
-		System.out.println(variables.toString());
-	}
-	
-	private static String convertToCamundaJson(String json) {
-		try {
-			JSONObject root = new JSONObject();
-			JSONObject variables = new JSONObject();
-			JSONObject obj = new JSONObject(json);
-			JSONObject data = obj.getJSONObject("data");
-			for (int i = 0; i < data.length(); i++) {
-				String key = (String) data.names().get(i);
-				Object value = data.get(key);
-				JSONObject subVarValue = new JSONObject();
-				subVarValue.put("value", value);
-				subVarValue.put("type", "string");
-				variables.accumulate(key, subVarValue);
-			}
-			root.put("variables", variables);
-			return root.toString();
-		} catch (JSONException ex) {
-			LOGGER.log(Level.SEVERE, ex.getMessage());
-			return null;
-		}
-	}
-	
-	private static String convertFromCamundaJson(String camundaJson) {
-		JSONObject root = new JSONObject();
-		try {
-			JSONObject data = new JSONObject(camundaJson);
-			for (int i = 0; i < data.length(); i++) {
-				String key = (String) data.names().get(i);
-				JSONObject valueObject = (JSONObject) data.get(key);
-				Object value = valueObject.get("value");
-				root.accumulate(key, value);
-			}
-		} catch (JSONException ex) {
-			LOGGER.log(Level.SEVERE, ex.getMessage());
-		}
-		return root.toString();
 	}
 
 }

@@ -29,7 +29,7 @@
 	
 	<jaxrs:server address="/v2016/06" id="jaxwsService">
 		<jaxrs:serviceBeans>
-			<ref bean="helloRestService" />
+			<ref bean="middleWareRestService" />
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>
 			<ref bean="jaxbProvider" />
@@ -37,7 +37,7 @@
 		</jaxrs:providers>
 	</jaxrs:server>
 	
-	<bean id="helloRestService" class="org.unctad.docker.java.server.impl.HelloWorldImpl">
+	<bean id="middleWareRestService" class="org.unctad.docker.java.server.impl.MiddleWareRestImpl">
 	</bean>
 	
 </beans>
