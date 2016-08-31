@@ -35,6 +35,14 @@ module.exports = function(formio) {
         type: String,
         description: 'The display method for this form'
       },
+      page: {
+          type: Number,
+          description: 'Wizard page number'
+      },
+      numPages: {
+          type: Number,
+          description: 'Number of wizard pages'
+      },
       action: {
         type: String,
         description: 'A custom action URL to submit the data to.'

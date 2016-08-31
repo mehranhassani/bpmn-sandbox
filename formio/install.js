@@ -178,7 +178,8 @@ module.exports = function(formio, items, done) {
     whatApp: function(done) {
       var repos = [
         'None',
-        'https://github.com/formio/formio-app-servicetracker',
+        //'https://github.com/formio/formio-app-servicetracker',
+        'https://github.com/formio/formio-app-formbuilder',
         'https://github.com/formio/formio-app-todo',
         'https://github.com/formio/formio-app-salesquote',
         'https://github.com/formio/formio-app-basic'
@@ -268,7 +269,7 @@ module.exports = function(formio, items, done) {
 
       // Download the client.
       download(
-        'https://nodeload.github.com/formio/formio-app-formio/zip/master',
+        'https://nodeload.github.com/krixerx/formio-app-formio/zip/master',
         'client.zip',
         'client',
         done
@@ -402,7 +403,7 @@ module.exports = function(formio, items, done) {
 
   util.log('Installing...');
   //prompt.start();
-  application = 'formio/formio-app-servicetracker';
+  application = 'krixerx/formio-components'; //'formio/formio-app-servicetracker';
   async.series([
     //steps.areYouSure,
     //steps.whatApp,

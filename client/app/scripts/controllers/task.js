@@ -17,7 +17,11 @@ angular.module('angularclientApp')
 		  var url = restApi + '/task/submission/' + $scope.taskId;
 		  $http.post(url,submission).then(function(response){ 
 			  console.log(response);
-			  $location.path('/');
+			  if (response.data === true) {
+				  $location.path('/');  
+			  } else {
+				  alert("Validation error! Check you fields!");
+			  }
 	      });
 	  });
 	    

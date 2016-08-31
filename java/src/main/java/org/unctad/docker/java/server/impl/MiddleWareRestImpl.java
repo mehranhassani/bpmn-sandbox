@@ -34,22 +34,22 @@ public class MiddleWareRestImpl implements DefaultApi {
 
 	@Override
 	public Response saveTaskSubmission(String taskId, String formData) {
-		System.out.println("Submission data received!");
-		System.out.println(formData);
+		LOGGER.log(Level.INFO, "Submission data received!");
+		LOGGER.log(Level.INFO, formData);
 		
 		String uri = "http://haproxy:6001/formio/survey/submission?dryrun=1";
 		List<Object> providers = new ArrayList<Object>();
 		providers.add(new JacksonJsonProvider());
-		WebClient client = WebClient.create(uri, providers).type(MediaType.APPLICATION_FORM_URLENCODED)
+		WebClient client = WebClient.create(uri, providers).type(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON);
 		String validation = client.post(formData).readEntity(String.class);
-		System.out.println("formio validation: " + validation);
+		LOGGER.log(Level.INFO, "formio validation: " + validation);
 		boolean isValid = Boolean.parseBoolean(validation);
 		if (isValid && completeTask(taskId, formData)) {
-			Response response = Response.status(Status.OK).entity("true").build();
+			Response response = Response.status(Status.OK).entity(true).build();
 			return response;
 		} else {
-			Response response = Response.status(Status.OK).entity("false").build();
+			Response response = Response.status(Status.OK).entity(false).build();
 			return response;
 		}
 	}
