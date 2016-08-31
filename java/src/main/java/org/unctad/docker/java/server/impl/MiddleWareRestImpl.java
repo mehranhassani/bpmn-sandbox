@@ -36,20 +36,26 @@ public class MiddleWareRestImpl implements DefaultApi {
 	public Response saveTaskSubmission(String taskId, String formData) {
 		LOGGER.log(Level.INFO, "Submission data received!");
 		LOGGER.log(Level.INFO, formData);
-		
-		String uri = "http://haproxy:6001/formio/survey/submission?dryrun=1";
-		List<Object> providers = new ArrayList<Object>();
-		providers.add(new JacksonJsonProvider());
-		WebClient client = WebClient.create(uri, providers).type(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON);
-		String validation = client.post(formData).readEntity(String.class);
-		LOGGER.log(Level.INFO, "formio validation: " + validation);
-		boolean isValid = Boolean.parseBoolean(validation);
-		if (isValid && completeTask(taskId, formData)) {
-			Response response = Response.status(Status.OK).entity(true).build();
-			return response;
-		} else {
-			Response response = Response.status(Status.OK).entity(false).build();
+		try {
+			String taskKey = getCamundaTaskKey(taskId);
+			String uri = "http://haproxy:6001/formio/" + taskKey + "/submission?dryrun=1";
+			List<Object> providers = new ArrayList<Object>();
+			providers.add(new JacksonJsonProvider());
+			WebClient client = WebClient.create(uri, providers).type(MediaType.APPLICATION_JSON)
+					.accept(MediaType.APPLICATION_JSON);
+			String validation = client.post(formData).readEntity(String.class);
+			LOGGER.log(Level.INFO, "formio validation: " + validation);
+			boolean isValid = Boolean.parseBoolean(validation);
+			if (isValid && completeTask(taskId, formData)) {
+				Response response = Response.status(Status.OK).entity(true).build();
+				return response;
+			} else {
+				Response response = Response.status(Status.OK).entity(false).build();
+				return response;
+			}
+		} catch (JSONException ex) {
+			LOGGER.log(Level.SEVERE, ex.toString());
+			Response response = Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal server error!").build();
 			return response;
 		}
 	}
