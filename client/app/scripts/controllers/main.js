@@ -8,7 +8,9 @@
  * Controller of the angularclientApp
  */
 angular.module('angularclientApp')
-  .controller('MainCtrl', function ($scope,$location,$http) {
+  .controller('MainCtrl', function ($scope,$location,$http,ENV) {
+	  
+	  var restApi = ENV.apiEndpoint;
 	  
 		function loadProcesses() {
 			var url = restApi + '/engine-rest/engine/default/process-definition';

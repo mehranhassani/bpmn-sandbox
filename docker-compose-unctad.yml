@@ -6,7 +6,10 @@ services:
     - "6006:80"
     image: krixerx/docker-nginx
   client:
-    build: ./client
+    build: 
+      context: ./client
+      args:
+      - BUILD_PROFILE=unctad
     ports:
     - "6005:80"
     image: krixerx/docker-client
@@ -25,7 +28,10 @@ services:
     - "6008:27017"
     image: mongo
   formio:
-    build: ./formio
+    build:
+      context: ./formio
+      args:
+      - NODE=unctad
     ports:
     - "3001:3001"
     image: krixerx/docker-formio

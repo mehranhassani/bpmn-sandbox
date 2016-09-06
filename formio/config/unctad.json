@@ -1,9 +1,9 @@
 {
   "port": 3001,
   "appPort": 8080,
-  "host": "localhost:6001/formio",
+  "host": "unctad.redfunction.ee/formio",
   "protocol": "http",
-  "domain": "http://localhost:6001/formio",
+  "domain": "http://unctad.redfunction.ee/formio",
   "basePath": "/formio",
   "mongo": "mongodb://mongo:27017/formioapp",
   "mongoSecret": "--- change me now ---",

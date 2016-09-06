@@ -22,8 +22,11 @@ RUN gem install compass
 RUN bower install --allow-root --config.interactive=false
 RUN npm install
 
+ARG BUILD_PROFILE=build
+ENV BUILD_PROFILE ${BUILD_PROFILE}
+
 # Building
-RUN grunt build
+RUN grunt ${BUILD_PROFILE}
 RUN cp -R /tmp/dist/. /usr/share/nginx/html
 RUN rm -rf /tmp
 WORKDIR /usr/share/nginx/html

@@ -1,9 +1,5 @@
 'use strict';
 
-
-var restApi = 'http://unctad.redfunction.ee/java/v2016/06';
-//var restApi = 'http://localhost:6001/java/v2016/06';
-
 /**
  * @ngdoc overview
  * @name angularclientApp
@@ -20,7 +16,8 @@ angular
     'ngRoute',
     'ngSanitize',
     'ngTouch',
-    'formio'
+    'formio',
+    'config'
   ])
   .config(function ($routeProvider) {
     $routeProvider

@@ -1,16 +1,20 @@
-# Dockerized microservices 
+# Process & page flow engine and modeler
+The proof of concept integrating Camunda and Form.io freeware frameworks.
+
+
+## Dockerized microservices 
 Application consists of multiple microservices which are programmed, launched and running separately.  
-All microservices implements and provides REST services defined by Swagger.
 
-## Microservices
-1. Java
-2. PHP
-3. Phyton
-4. Node.js
-5. HAProxy
-6. Monitoring
+### Microservices
+1. Java - REST services, orchestrates Camunda and Form.io REST services;
+2. Camunda - REST services and administrator console;
+3. Form.io - REST services and UI form/wizard modeler;
+4. Client - Angular.js client;
+5. HAProxy - Connection routing
+6. Monitoring - Docker health monitoring;
+7. Mongo - NoSQL database
 
-## Install Docker
+### Install Docker
 * Go to website and download Docker: [https://www.docker.com/](https://www.docker.com/)
 * Install Docker as described in documentation: [https://docs.docker.com/](https://docs.docker.com/)
 
@@ -21,7 +25,7 @@ _$ docker-machine ls_
 docker-machine create --driver virtualbox default
 
 
-## Build and launch docker images
+### Build and launch docker images
 Docker images can be activated separately or together.  
 Docker images activation is described in docker-compose.yml
 
@@ -31,15 +35,13 @@ _$ docker-compose up -d_
 
 **Check what processes are running:**  
 _$ docker ps_  
-Now you should see 4 running processes.
-If you are using Linux on your machine, just call http://localhost:[port]/[rest service].  
-While using windows then docker machine ip is not shared automatically.
-Try to find your docker machine ip by calling command _$ docker-machine env_.  
+Now you should see running processes.
+Test in your browser http://localhost:6001
 
 **Deactivate dockers:**  
 _$ docker-compose down_
 
-## General Docker commands
+### General Docker commands
 **List Docker networks:**  
 _$ docker network ls_
 
@@ -76,8 +78,9 @@ docker rm $(docker ps -a -q)
 **Delete all images:**
 _$ docker rmi $(docker images -q)_
 
-## Swagger integrations
+### Swagger integrations
+All REST API-s are define in Swagger.
 Read more: [http://swagger.io/open-source-integrations/](http://swagger.io/open-source-integrations/)
 
-##Test server  
+###Test server  
 [http://unctad.redfunction.ee/](http://unctad.redfunction.ee/)

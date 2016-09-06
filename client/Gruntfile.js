@@ -18,6 +18,9 @@ module.exports = function (grunt) {
     ngtemplates: 'grunt-angular-templates',
     cdnify: 'grunt-google-cdn'
   });
+  
+  //var ngConstant = require('gulp-ng-constant');
+  grunt.loadNpmTasks('grunt-ng-constant');
 
   // Configurable paths for the application
   var appConfig = {
@@ -380,6 +383,55 @@ module.exports = function (grunt) {
         dest: '.tmp/templateCache.js'
       }
     },
+    
+    ngconstant: {
+		  // Options for all targets
+		  options: {
+		    space: '  ',
+		    wrap: '\'use strict\';\n\n {%= __ngModule %}',
+		    name: 'config',
+		    constants: {
+		    	ENV: {
+			        name: 'default',
+			        apiEndpoint: 'http://localhost:6001/java/v2016/06'
+			    }
+			}
+		  },
+		  // Environment targets
+		  development: {
+		    options: {
+		      dest: '<%= yeoman.app %>/scripts/config.js'
+		    },
+		    constants: {
+		      ENV: {
+		        name: 'development',
+		        apiEndpoint: 'http://localhost:6001/java/v2016/06'
+		      }
+		    }
+		  },
+		  production: {
+		    options: {
+		      dest: '<%= yeoman.app %>/scripts/config.js'
+		    },
+		    constants: {
+		      ENV: {
+		        name: 'production',
+		        apiEndpoint: 'http://localhost:6001/java/v2016/06'
+		      }
+		    }
+		  },
+		  unctad: {
+			    options: {
+			      dest: '<%= yeoman.app %>/scripts/config.js'
+			    },
+			    constants: {
+			      ENV: {
+			        name: 'unctad',
+			        apiEndpoint: 'http://unctad.redfunction.ee/java/v2016/06'
+			      }
+			    }
+			  }
+		},
 
     // ng-annotate tries to make the code safe for minification automatically
     // by using the Angular long form for dependency injection.
@@ -458,7 +510,8 @@ module.exports = function (grunt) {
       }
     }
   });
-
+  
+  //grunt.loadNpmTasks('grunt-ng-constant');
 
   grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {
     if (target === 'dist') {
@@ -467,6 +520,7 @@ module.exports = function (grunt) {
 
     grunt.task.run([
       'clean:server',
+      'ngconstant:development',
       'wiredep',
       'concurrent:server',
       'postcss:server',
@@ -491,6 +545,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
+    'ngconstant:production',
     'wiredep',
     'useminPrepare',
     'concurrent:dist',
@@ -506,6 +561,25 @@ module.exports = function (grunt) {
     'usemin',
     'htmlmin'
   ]);
+  
+  grunt.registerTask('unctad', [
+                               'clean:dist',
+                               'ngconstant:unctad',
+                               'wiredep',
+                               'useminPrepare',
+                               'concurrent:dist',
+                               'postcss',
+                               'ngtemplates',
+                               'concat',
+                               'ngAnnotate',
+                               'copy:dist',
+                               'cdnify',
+                               'cssmin',
+                               'uglify',
+                               'filerev',
+                               'usemin',
+                               'htmlmin'
+                             ]);
 
   grunt.registerTask('default', [
     'newer:jshint',

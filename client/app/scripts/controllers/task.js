@@ -8,10 +8,11 @@
  * Controller of the angularclientApp
  */
 angular.module('angularclientApp')
-  .controller('TaskCtrl', function ($scope,$routeParams,$http,$location) {
+  .controller('TaskCtrl', function ($scope,$window,$routeParams,$http,$location,ENV) {
 	  $scope.taskId = $routeParams.taskid;
 	  $scope.submission = {};
 	  $scope.form = {};
+	  var restApi = ENV.apiEndpoint;
 	  
 	  $scope.$on('formSubmit', function(err, submission) {
 		  var url = restApi + '/task/submission/' + $scope.taskId;
@@ -20,7 +21,7 @@ angular.module('angularclientApp')
 			  if (response.data === true) {
 				  $location.path('/');  
 			  } else {
-				  alert("Validation error! Check you fields!");
+				  $window.alert('Validation error! Check you fields!');
 			  }
 	      });
 	  });

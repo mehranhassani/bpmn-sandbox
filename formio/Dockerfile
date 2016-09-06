@@ -11,5 +11,9 @@ RUN npm install
 # Bundle app source
 COPY . /usr/src/app
 
+# ENV Settings
+ARG NODE=default
+ENV NODE_ENV ${NODE}
+
 EXPOSE 3001
 CMD [ "npm", "start" ]
