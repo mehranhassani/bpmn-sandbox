@@ -5,6 +5,8 @@ module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
 
   var path = require('path');
+  
+  grunt.loadNpmTasks('grunt-preprocess');
 
   /**
    * Resolve external project resource as file path
@@ -16,6 +18,32 @@ module.exports = function(grunt) {
   // project configuration
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    
+    preprocess : {
+        options : {
+        	context : {
+        		apiEndpoint : 'http://localhost:6001/java/v2016/06'
+        	}
+        },
+        dev: {
+        	options : {
+        		context : {
+        			apiEndpoint : 'http://localhost:6001/java/v2016/06'
+        		}
+        	},
+        	src: './dist/index.js',
+            dest: './dist/index.js'
+        },
+        unctad : {
+        	options : {
+        		context : {
+        			apiEndpoint : 'http://unctad.redfunction.ee/java/v2016/06'
+        		}
+        	},
+        	src: './dist/index.js',
+            dest: './dist/index.js'
+        }
+    },
 
     config: {
       sources: 'app',
@@ -147,15 +175,18 @@ module.exports = function(grunt) {
 
   // tasks
 
-  grunt.registerTask('build', [ 'copy', 'less', 'browserify:app' ]);
+  grunt.registerTask('build', [ 'copy', 'less', 'browserify:app', 'preprocess:dev' ]);
+  
+  grunt.registerTask('unctad', [ 'copy', 'less', 'browserify:app', 'preprocess:unctad' ]);
 
   grunt.registerTask('auto-build', [
     'copy',
     'less',
     'browserify:watch',
+    'preprocess:dev',
     'connect:livereload',
     'watch'
   ]);
 
-  grunt.registerTask('default', [ 'jshint', 'build' ]);
+  grunt.registerTask('default', [ 'jshint', 'env:dev', 'build' ]);
 };

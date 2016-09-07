@@ -51,6 +51,27 @@ paths:
           schema: 
             $ref: "#/definitions/TaskId"
         400:
+          description: "The path parameter key has no value." 
+        404:
+          description: "Process definition with given key does not exist." 
+  /engine-rest/engine/default/process-definition/key/{key}/xml:
+    get:
+      description: "Return BPMN xml."
+      operationId: "getProcessDefinitionXml"
+      produces:
+        - application/xml
+      parameters: 
+        - name: key
+          in: path
+          type: string
+          description: "key"
+          required: true
+      responses:
+        200:
+          description: Returns BPMN xml.
+          schema: 
+            type: string
+        400:
           description: "Invalid parameters." 
   /engine-rest/engine/default/task:
     get:

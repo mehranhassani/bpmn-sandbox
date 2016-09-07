@@ -14,7 +14,10 @@ services:
     - "6005:80"
     image: krixerx/docker-client
   bpmnjs:
-    build: ./bpmn-js
+    build:
+      context: ./bpmn-js
+      args:
+      - BUILD_PROFILE=unctad
     ports:
     - "6003:80"
     image: krixerx/bpmn-js

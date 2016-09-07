@@ -19,7 +19,6 @@ module.exports = function (grunt) {
     cdnify: 'grunt-google-cdn'
   });
   
-  //var ngConstant = require('gulp-ng-constant');
   grunt.loadNpmTasks('grunt-ng-constant');
 
   // Configurable paths for the application

@@ -188,7 +188,7 @@ public class MiddleWareRestImpl implements DefaultApi {
 		providers.add( new JacksonJsonProvider() );
 		WebClient client = WebClient.create(uri, providers).accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
 		String taskListJson = client.get().readEntity(String.class);
-		System.out.println("KALA: " + taskListJson);
+		LOGGER.log(Level.FINE, "getProcessTaskId = " + taskListJson);
 		if (taskListJson != null) {
 			JSONArray jsonarray = new JSONArray(taskListJson);
 			JSONObject jsonObject = jsonarray.getJSONObject(0);
@@ -196,5 +196,30 @@ public class MiddleWareRestImpl implements DefaultApi {
 		}
 		return null;
 	}
+
+	@Override
+	public Response getProcessDefinitionXml(String key) {
+		try {
+			String uri = "http://camunda:8080/engine-rest/engine/default/process-definition/key/" + key + "/xml";
+			List<Object> providers = new ArrayList<Object>();
+			providers.add( new JacksonJsonProvider() );
+			WebClient client = WebClient.create(uri, providers).accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
+			String data = client.get().readEntity(String.class);
+			LOGGER.log(Level.FINE, "getProcessDefinitionXml = " + data);
+			if (data != null) {
+				JSONObject jsonObject = new JSONObject(data);
+				String xml = jsonObject.getString("bpmn20Xml");
+				Response response = Response.status(Status.OK).entity(xml).build();
+				return response;
+			} else {
+				return null;
+			}
+		} catch (JSONException ex) {
+			LOGGER.log(Level.SEVERE, ex.getMessage());
+			Response response = Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal server error!").build();
+			return response;
+		}
+	}
+
 
 }

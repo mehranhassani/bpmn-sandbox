@@ -9,6 +9,8 @@ var propertiesPanelModule = require('bpmn-js-properties-panel'),
     propertiesProviderModule = require('bpmn-js-properties-panel/lib/provider/camunda'),
     camundaModdleDescriptor = require('camunda-bpmn-moddle/resources/camunda');
 
+var apiEndpoint = '/* @echo apiEndpoint */';
+
 var container = $('#js-drop-zone');
 
 var canvas = $('#js-canvas');
@@ -32,6 +34,14 @@ var newDiagramXML = fs.readFileSync(__dirname + '/../resources/newDiagram.bpmn',
 function createNewDiagram() {
   openDiagram(newDiagramXML);
 }
+
+function openDiagramById(key) {
+	  $.ajax({
+	      url: apiEndpoint + "/engine-rest/engine/default/process-definition/key/" + key + "/xml"
+	  }).then(function(xml) {
+		  openDiagram((new XMLSerializer()).serializeToString(xml));
+	  });
+	}
 
 function openDiagram(xml) {
 
@@ -120,6 +130,22 @@ $(document).on('ready', function() {
     e.preventDefault();
 
     createNewDiagram();
+  });
+  
+  $.ajax({
+      url: apiEndpoint + "/engine-rest/engine/default/process-definition"
+  }).then(function(data) {
+	  var items = [];
+	  $.each( data, function( num ) {
+	    items.push( "<a id='myLink" + num + "' href='#'>" + (num + 1) + ". " + data[num].name + "</a><br>" );
+	  });
+	  $( "<div/>", {
+		    "class": "my-new-list",
+		    html: items.join( "" )
+		  }).appendTo( ".diagrams" );
+	  $.each( data, function( num ) {
+		    $('#myLink' + num).click(function(){ openDiagramById(data[num].key); return false; });
+		  });
   });
 
   var downloadLink = $('#js-download-diagram');
