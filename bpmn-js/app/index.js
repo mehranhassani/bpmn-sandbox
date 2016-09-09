@@ -76,6 +76,39 @@ function saveDiagram(done) {
   });
 }
 
+function saveDiagramToServer(done) {
+	 bpmnModeler.saveXML({ format: true }, function(err, xml) {
+		    done(err, xml);
+		  });
+}
+
+function saveBpmnToServer() {
+	$('#info').html( "Saving ..." );
+	bpmnModeler.saveXML({ format: true }, function(err, xml) {
+		$.ajax({
+		    url: apiEndpoint + '/engine-rest/engine/default/deployment/create',
+		    dataType: 'json',
+		    type: 'post',
+		    contentType: 'multipart/form-data',
+		    headers: {
+		        'deployment-name':'test5.bpmn',
+		        'enable-duplicate-filtering':'true',
+		        'deploy-changed-only-name': 'mytest',
+		        'Content-Type':'multipart/form-data'
+		    },
+		    data: xml,
+		    processData: false,
+		    success: function( data, textStatus, jQxhr ){
+		        $('#info').html( "Saved successfully!" );
+		    },
+		    error: function( jqXhr, textStatus, errorThrown ){
+		    	$('#info').html( "Saving failed! Check you bpmn." + errorThrown);
+		        console.log( errorThrown );
+		    }
+		});
+	});
+}
+
 function registerFileDrop(container, callback) {
 
   function handleFileSelect(e) {
@@ -132,6 +165,10 @@ $(document).on('ready', function() {
     createNewDiagram();
   });
   
+  $('#js-create-diagram').click(function(e) {
+	  
+  });
+  
   $.ajax({
       url: apiEndpoint + "/engine-rest/engine/default/process-definition"
   }).then(function(data) {
@@ -150,6 +187,8 @@ $(document).on('ready', function() {
 
   var downloadLink = $('#js-download-diagram');
   var downloadSvgLink = $('#js-download-svg');
+  var saveBpmnLink = $('#js-save-bpmn');
+  saveBpmnLink.click(function(){ saveBpmnToServer(); return false; });
 
   $('.buttons a').click(function(e) {
     if (!$(this).is('.active')) {
@@ -170,6 +209,16 @@ $(document).on('ready', function() {
       link.removeClass('active');
     }
   }
+  
+  function setEncoded2(link, name, data) {
+	    var encodedData = encodeURIComponent(data);
+
+	    if (data) {
+	    	link.addClass('active');
+	    } else {
+	      link.removeClass('active');
+	    }
+	  }
 
   var debounce = require('lodash/function/debounce');
 
@@ -181,6 +230,10 @@ $(document).on('ready', function() {
 
     saveDiagram(function(err, xml) {
       setEncoded(downloadLink, 'diagram.bpmn', err ? null : xml);
+    });
+    
+    saveDiagramToServer(function(err, xml) {
+      setEncoded2(saveBpmnLink, 'diagram.bpmn', err ? null : xml);
     });
   }, 500);
 

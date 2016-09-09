@@ -11,6 +11,40 @@ consumes:
 produces:
   - application/json
 paths:
+  /engine-rest/engine/default/deployment/create:
+    post:
+      description: "Deploy new process definition."
+      operationId: "deployProcessDefinition"
+      consumes:
+        - multipart/form-data
+      parameters: 
+        - name: deployment-name
+          in: header
+          type: string
+          description: "The name for the deployment to be created"
+          required: true
+        - name: enable-duplicate-filtering
+          in: header
+          type: string
+          description: "A flag indicating whether the process engine should perform duplicate checking for the deployment or not"
+          required: true
+        - name: deploy-changed-only
+          in: header
+          type: string
+          description: "A flag indicating whether the process engine should perform duplicate checking on a per-resource basis"
+          required: true
+        - name: content
+          in: body
+          description: "BPMN xml data"
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Request successful.
+
+
+
   /engine-rest/engine/default/process-definition:
     get:
       description: "Return list of process definitions."
@@ -161,6 +195,17 @@ definitions:
         description:
           type: string
         name:
+          type: string
+    ProcessDefinitionXml:
+      type: "object"
+      properties:
+        deploymentName:
+          type: string
+        enableDuplicateFiltering:
+          type: boolean
+        deployChangedOnly:
+          type: string
+        content:
           type: string
     ProcessTask:
       type: "object"

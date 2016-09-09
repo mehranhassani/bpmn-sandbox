@@ -1,6 +1,10 @@
 package org.unctad.docker.java.server.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -12,6 +16,16 @@ import org.unctad.docker.java.model.ProcessDefinition;
 import org.unctad.docker.java.model.ProcessTask;
 import org.unctad.docker.java.server.DefaultApi;
 import org.unctad.docker.java.server.utils.Utils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.InputStreamBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.util.logging.Level;
 
@@ -19,7 +33,10 @@ import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.codehaus.jettison.json.JSONStringer;
+import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.jaxrs.client.WebClient;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 
 public class MiddleWareRestImpl implements DefaultApi {
 	
@@ -221,5 +238,60 @@ public class MiddleWareRestImpl implements DefaultApi {
 		}
 	}
 
+	@Override
+	public Response deployProcessDefinition(String deploymentName, String enableDuplicateFiltering, String deployChangedOnly, String content) {
+		LOGGER.log(Level.WARNING, "deployProcessDefinition input data = " + content);
+		try {
+			System.out.println("*******************");
+			System.out.println("deploymentName = " + deploymentName);
+			System.out.println("enableDuplicateFiltering = " + enableDuplicateFiltering);
+			System.out.println("deployChangedOnly = " + deployChangedOnly);
+			System.out.println("content = " + content);
+			System.out.println("*******************");
+			
+			
+			String uri = "http://camunda:8080/engine-rest/engine/default/deployment/create";
+			//String uri = "http://localhost:6009/engine-rest/engine/default/deployment/create";
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpPost httppost = new HttpPost(uri);
+			MultipartEntity reqEntity = new MultipartEntity();
+			ByteArrayInputStream contentStream = new ByteArrayInputStream(content.getBytes());
+			InputStreamBody streamBody = new InputStreamBody(contentStream, MediaType.APPLICATION_OCTET_STREAM, deploymentName);
+			reqEntity.addPart("project", streamBody);
+			httppost.addHeader("deployment-name", deploymentName);
+	        httppost.addHeader("enable-duplicate-filtering", enableDuplicateFiltering);
+	        httppost.addHeader("deploy-changed-only-name", deployChangedOnly);
+	        httppost.setEntity(reqEntity);
+	        HttpResponse camResponse = httpclient.execute(httppost);
+	        HttpEntity resEntity = camResponse.getEntity();
+	        String camContent = IOUtils.toString(resEntity.getContent(), "UTF-8");
+			LOGGER.log(Level.WARNING, "deployProcessDefinition Camunda result = " + camContent);
+			Response response = Response.status(Status.OK).entity(camContent).build();
+			return response;
+		} catch (Exception ex) {
+			LOGGER.log(Level.SEVERE, ex.getMessage());
+			Response response = Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal server error!").build();
+			return response;
+		}
+	}
+	
+	public static void main(String[] args) throws Exception {
+		String uri = "http://localhost:6001/java/v2016/06/engine-rest/engine/default/deployment/create";
+		FileBody body = new FileBody(new File(MiddleWareRestImpl.class.getResource("/test.bpmn").getFile()));
+		String content = IOUtils.toString(body.getInputStream(), "UTF-8");
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpPost httppost = new HttpPost(uri);
+		MultipartEntity reqEntity = new MultipartEntity();
+		
+		reqEntity.addPart("content", new StringBody(content));
+		httppost.addHeader("deployment-name", "test3.bpmn");
+        httppost.addHeader("enable-duplicate-filtering", "true");
+        httppost.addHeader("deploy-changed-only-name", "hjello");
+        httppost.setEntity(reqEntity);
+        HttpResponse camResponse = httpclient.execute(httppost);
+        HttpEntity resEntity = camResponse.getEntity();
+        String result = IOUtils.toString(resEntity.getContent(), "UTF-8");
+		System.out.println("deployProcessDefinition Camunda result = " + result);
+	}
 
 }
