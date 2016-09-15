@@ -11,6 +11,36 @@ consumes:
 produces:
   - application/json
 paths:
+  /engine-rest/engine/default/deployment:
+    get:
+      description: "Get Deployments"
+      operationId: "getDeploymentList"
+      responses:
+        200:
+          description: "Returns deployments."
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Deployment"
+        400:
+          description: "Invalid parameters."  
+  /engine-rest/engine/default/deployment/{deploymentId}/xml:
+    get:
+      description: "Get deployment xml"
+      operationId: "getDeploymentXml"
+      parameters: 
+        - name: deploymentId
+          in: path
+          type: string
+          description: "deploymentId"
+          required: true
+      responses:
+        200:
+          description: "Returns deployment xml."
+          schema:
+            type: string
+        400:
+          description: "Invalid parameters."  
   /engine-rest/engine/default/deployment/create:
     post:
       description: "Deploy new process definition."
@@ -23,16 +53,6 @@ paths:
           type: string
           description: "The name for the deployment to be created"
           required: true
-        - name: enable-duplicate-filtering
-          in: header
-          type: string
-          description: "A flag indicating whether the process engine should perform duplicate checking for the deployment or not"
-          required: true
-        - name: deploy-changed-only
-          in: header
-          type: string
-          description: "A flag indicating whether the process engine should perform duplicate checking on a per-resource basis"
-          required: true
         - name: content
           in: body
           description: "BPMN xml data"
@@ -41,10 +61,7 @@ paths:
             type: string
       responses:
         200:
-          description: Request successful.
-
-
-
+          description: "Request successful."
   /engine-rest/engine/default/process-definition:
     get:
       description: "Return list of process definitions."
@@ -92,6 +109,76 @@ paths:
     get:
       description: "Return BPMN xml."
       operationId: "getProcessDefinitionXml"
+      produces:
+        - application/xml
+      parameters: 
+        - name: key
+          in: path
+          type: string
+          description: "key"
+          required: true
+      responses:
+        200:
+          description: Returns BPMN xml.
+          schema: 
+            type: string
+        400:
+          description: "Invalid parameters." 
+          
+          
+  /engine-rest/engine/default/decision-definition:
+    get:
+      description: "Return list of decision definitions."
+      operationId: "getDecisionDefinitionList"
+      responses:
+        200:
+          description: Returns decision definitions.
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/DecisionDefinition"
+        400:
+          description: "Invalid parameters."  
+  /engine-rest/engine/default/decision-definition/count:
+    get:
+      description: "Return count of decision definitions."
+      operationId: "getDecisionDefinitionCount"
+      responses:
+        200:
+          description: Returns count of decision definitions.
+          schema: 
+            $ref: "#/definitions/Count"
+        400:
+          description: "Invalid parameters." 
+  /engine-rest/engine/default/decision-definition/{decisionDefinitionId}/evaluate:
+    post:
+      description: "Evaluates a given decision definition."
+      operationId: "evaluateDecision"
+      parameters: 
+        - name: decisionDefinitionId
+          in: path
+          type: string
+          description: "decisionDefinitionId"
+          required: true
+        - name: content
+          in: body
+          description: "json to evaluate"
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Returns the taskId.
+          schema: 
+            type: string
+        400:
+          description: "The path parameter key has no value." 
+        404:
+          description: "Process definition with given key does not exist." 
+  /engine-rest/engine/default/decision-definition/key/{key}/xml:
+    get:
+      description: "Return BPMN xml."
+      operationId: "getDecisionDefinitionXml"
       produces:
         - application/xml
       parameters: 
@@ -183,6 +270,37 @@ paths:
         500:
           description: "An error has occurred."
 definitions:
+    DecisionDefinition:
+      type: "object"
+      properties:
+        id:
+          type: string
+        key:
+          type: string
+        category:
+          type: string
+        name:
+          type: string
+    Deployment:
+      type: "object"
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        source:
+          type: string
+        tenantId:
+          type: string
+        deploymentTime:
+          type: date
+    DeploymentResource:
+        id:
+          type: string
+        name:
+          type: string
+        deploymentId:
+          type: string
     ProcessDefinition:
       type: "object"
       properties:
@@ -195,17 +313,6 @@ definitions:
         description:
           type: string
         name:
-          type: string
-    ProcessDefinitionXml:
-      type: "object"
-      properties:
-        deploymentName:
-          type: string
-        enableDuplicateFiltering:
-          type: boolean
-        deployChangedOnly:
-          type: string
-        content:
           type: string
     ProcessTask:
       type: "object"

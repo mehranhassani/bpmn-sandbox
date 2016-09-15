@@ -21,6 +21,14 @@ services:
     ports:
     - "6003:80"
     image: krixerx/bpmn-js
+  dmnjs:
+    build:
+      context: ./dmn-js
+      args:
+      - BUILD_PROFILE=unctad
+    ports:
+    - "6004:80"
+    image: krixerx/dmn-js
   java:
     build: ./java
     ports:
@@ -64,6 +72,7 @@ services:
     - nginx
     - client
     - bpmnjs
+    - dmnjs
     - java
     - formio
     - camunda

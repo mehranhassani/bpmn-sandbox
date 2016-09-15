@@ -1,10 +1,20 @@
 package org.unctad.docker.java.server.utils;
 
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.w3c.dom.Document;
 
 public class Utils {
 	
@@ -80,7 +90,22 @@ public class Utils {
 		return name.split("_");
 	}
 	
-	public static void main(String[] args) throws JSONException {
+	public static String getNameFromProcessXml(String xml) {
+		try {
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+	        DocumentBuilder db = dbf.newDocumentBuilder();
+	        Document document = db.parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
+	        XPathFactory xpf = XPathFactory.newInstance();
+	        XPath xp = xpf.newXPath();
+	        XPathExpression expr = xp.compile("//definitions/process/@name");
+	        return (String) expr.evaluate(document, XPathConstants.STRING);
+		} catch (Exception ex) {
+			LOGGER.log(Level.SEVERE, ex.getMessage());
+			return null;
+		}
+	}
+	
+	public static void mains(String[] args) throws JSONException {
 		// multilevel
 		String formData = convertToCamundaJson("{\"data\":{\"address2\":{\"country\":\"Eesti\",\"city\":\"Kiili\",\"street\":\"Allika 26\"}}}");
 		//String formData = convertToCamundaJson("{\"data\"={\"eesnimi\":\"wjjjcccjj\", \"perenimi\":\"wjeeeecjj\",\"accept\":{\"\":true}}}");
@@ -88,6 +113,15 @@ public class Utils {
 		String json = convertFromCamundaToJson("{\"data_name\":{\"type\":\"String\",\"value\":\"Kalamees\",\"valueInfo\":{}},\"data_address_street\":{\"type\":\"String\",\"value\":\"Kalda\",\"valueInfo\":{}},\"data_address_city\":{\"type\":\"String\",\"value\":\"Kiili\",\"valueInfo\":{}},\"data_address_country\":{\"type\":\"String\",\"value\":\"Eesti\",\"valueInfo\":{}},\"requestor\":{\"type\":\"Null\",\"value\":null,\"valueInfo\":{}}}");
 		//{"data":{"name":"Restoran Gloria","address":{"country":"Eesti","city":"Kiili","street":"Allika 26"}}}
 		System.out.println(json);
+	}
+	
+	public static void main(String[] args) throws JSONException {
+		StringBuilder builder = new StringBuilder();
+		builder.append("<bpmn2:definitions xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:bpmn2=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"sample-diagram\" targetNamespace=\"http://bpmn.io/schema/bpmn\" xsi:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\">");
+		builder.append("<bpmn2:process id=\"Process_1\" name=\"Ingmars\" isExecutable=\"false\">");
+		builder.append("</bpmn2:process>");
+		builder.append("</bpmn2:definitions>");
+		System.out.println(getNameFromProcessXml(builder.toString()));
 	}
 
 }

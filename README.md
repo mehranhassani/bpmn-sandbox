@@ -5,14 +5,15 @@ The proof of concept integrating Camunda and Form.io freeware frameworks.
 ## Dockerized microservices 
 Application consists of multiple microservices which are programmed, launched and running separately.  
 
-### Microservices
+### Microservices/Dockers
 1. Java - REST services, orchestrates Camunda and Form.io REST services;
 2. Camunda - REST services and administrator console;
 3. Form.io - REST services and UI form/wizard modeler;
-4. Client - Angular.js client;
-5. HAProxy - Connection routing
-6. Monitoring - Docker health monitoring;
-7. Mongo - NoSQL database
+4. BPMN modeler;
+5. Client - Angular.js client;
+6. HAProxy - Connection routing
+7. Monitoring - Docker health monitoring;
+8. Mongo - NoSQL database
 
 ### Install Docker
 * Go to website and download Docker: [https://www.docker.com/](https://www.docker.com/)

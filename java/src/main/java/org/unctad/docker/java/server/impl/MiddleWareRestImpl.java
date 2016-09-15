@@ -2,9 +2,8 @@ package org.unctad.docker.java.server.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -12,6 +11,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.unctad.docker.java.model.Count;
+import org.unctad.docker.java.model.DecisionDefinition;
+import org.unctad.docker.java.model.Deployment;
 import org.unctad.docker.java.model.ProcessDefinition;
 import org.unctad.docker.java.model.ProcessTask;
 import org.unctad.docker.java.server.DefaultApi;
@@ -19,27 +20,24 @@ import org.unctad.docker.java.server.utils.Utils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
-
 import java.util.logging.Level;
 
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.codehaus.jettison.json.JSONStringer;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.jaxrs.client.WebClient;
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 
 public class MiddleWareRestImpl implements DefaultApi {
-	
 	
 	private static final Logger LOGGER = Logger.getLogger(MiddleWareRestImpl.class.getName());
 
@@ -239,34 +237,33 @@ public class MiddleWareRestImpl implements DefaultApi {
 	}
 
 	@Override
-	public Response deployProcessDefinition(String deploymentName, String enableDuplicateFiltering, String deployChangedOnly, String content) {
-		LOGGER.log(Level.WARNING, "deployProcessDefinition input data = " + content);
+	public Response deployProcessDefinition(String deploymentName, String content) {
+		//LOGGER.log(Level.WARNING, "deployProcessDefinition input data = " + content);
 		try {
 			System.out.println("*******************");
 			System.out.println("deploymentName = " + deploymentName);
-			System.out.println("enableDuplicateFiltering = " + enableDuplicateFiltering);
-			System.out.println("deployChangedOnly = " + deployChangedOnly);
 			System.out.println("content = " + content);
+			System.out.println("deployment-source = " + Utils.getNameFromProcessXml(content));
 			System.out.println("*******************");
-			
 			
 			String uri = "http://camunda:8080/engine-rest/engine/default/deployment/create";
 			//String uri = "http://localhost:6009/engine-rest/engine/default/deployment/create";
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpPost httppost = new HttpPost(uri);
+
 			MultipartEntity reqEntity = new MultipartEntity();
 			ByteArrayInputStream contentStream = new ByteArrayInputStream(content.getBytes());
 			InputStreamBody streamBody = new InputStreamBody(contentStream, MediaType.APPLICATION_OCTET_STREAM, deploymentName);
 			reqEntity.addPart("project", streamBody);
-			httppost.addHeader("deployment-name", deploymentName);
-	        httppost.addHeader("enable-duplicate-filtering", enableDuplicateFiltering);
-	        httppost.addHeader("deploy-changed-only-name", deployChangedOnly);
-	        httppost.setEntity(reqEntity);
-	        HttpResponse camResponse = httpclient.execute(httppost);
-	        HttpEntity resEntity = camResponse.getEntity();
-	        String camContent = IOUtils.toString(resEntity.getContent(), "UTF-8");
-			LOGGER.log(Level.WARNING, "deployProcessDefinition Camunda result = " + camContent);
-			Response response = Response.status(Status.OK).entity(camContent).build();
+			
+			reqEntity.addPart("deployment-name", new StringBody(deploymentName));	
+			reqEntity.addPart("enable-duplicate-filtering", new StringBody("true"));	
+			reqEntity.addPart("deployment-source", new StringBody(Utils.getNameFromProcessXml(content)));	
+			httppost.setEntity(reqEntity);
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            String responseBody = httpclient.execute(httppost, responseHandler);
+			LOGGER.log(Level.WARNING, "deployProcessDefinition Camunda result = " + responseBody);
+			Response response = Response.status(Status.OK).entity(responseBody).build();
 			return response;
 		} catch (Exception ex) {
 			LOGGER.log(Level.SEVERE, ex.getMessage());
@@ -276,6 +273,13 @@ public class MiddleWareRestImpl implements DefaultApi {
 	}
 	
 	public static void main(String[] args) throws Exception {
+		FileBody body = new FileBody(new File(MiddleWareRestImpl.class.getResource("/test.bpmn").getFile()));
+		String content = IOUtils.toString(body.getInputStream(), "UTF-8");
+		Response response = new MiddleWareRestImpl().deployProcessDefinition("test.bpmn", content);
+		System.out.println("deployProcessDefinition Camunda result = " + response.getEntity());
+	}
+	
+	public static void main2(String[] args) throws Exception {
 		String uri = "http://localhost:6001/java/v2016/06/engine-rest/engine/default/deployment/create";
 		FileBody body = new FileBody(new File(MiddleWareRestImpl.class.getResource("/test.bpmn").getFile()));
 		String content = IOUtils.toString(body.getInputStream(), "UTF-8");
@@ -292,6 +296,111 @@ public class MiddleWareRestImpl implements DefaultApi {
         HttpEntity resEntity = camResponse.getEntity();
         String result = IOUtils.toString(resEntity.getContent(), "UTF-8");
 		System.out.println("deployProcessDefinition Camunda result = " + result);
+	}
+
+	@Override
+	public Response evaluateDecision(String decisionDefinitionId, String jsonContent) {
+		String uri = "http://camunda:8080/engine-rest/engine/default/decision-definition/" + decisionDefinitionId + "/evaluate";
+		List<Object> providers = new ArrayList<Object>();
+		providers.add(new JacksonJsonProvider());
+		WebClient client = WebClient.create(uri, providers).accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
+		String jsonString = client.post(jsonContent).readEntity(String.class);
+		Response response = Response.status(Status.OK).entity(jsonString).build();
+		return response;
+	}
+
+	@Override
+	public Response getDecisionDefinitionCount() {
+		String uri = "http://camunda:8080/engine-rest/engine/default/decision-definition/count";
+		List<Object> providers = new ArrayList<Object>();
+		providers.add( new JacksonJsonProvider() );
+		WebClient client = WebClient.create(uri, providers).accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
+		Count count = client.get().readEntity(Count.class);
+		Response response = Response.status(Status.OK).entity(count).build();
+		return response;
+	}
+
+	@Override
+	public Response getDecisionDefinitionList() {
+		String uri = "http://camunda:8080/engine-rest/engine/default/decision-definition/";
+		List<Object> providers = new ArrayList<Object>();
+		providers.add( new JacksonJsonProvider() );
+		WebClient client = WebClient.create(uri, providers).accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
+		List<DecisionDefinition> decisionDefinitions = client.get().readEntity(List.class);
+		Response response = Response.status(Status.OK).entity(decisionDefinitions).build();
+		return response;
+	}
+
+	@Override
+	public Response getDecisionDefinitionXml(String key) {
+		try {
+			String uri = "http://camunda:8080/engine-rest/engine/default/decision-definition/key/" + key + "/xml";
+			List<Object> providers = new ArrayList<Object>();
+			providers.add( new JacksonJsonProvider() );
+			WebClient client = WebClient.create(uri, providers).accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
+			String data = client.get().readEntity(String.class);
+			LOGGER.log(Level.FINE, "getDecisionDefinitionXml = " + data);
+			if (data != null) {
+				JSONObject jsonObject = new JSONObject(data);
+				String xml = jsonObject.getString("dmnXml");
+				Response response = Response.status(Status.OK).entity(xml).build();
+				return response;
+			} else {
+				return null;
+			}
+		} catch (JSONException ex) {
+			LOGGER.log(Level.SEVERE, ex.getMessage());
+			Response response = Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal server error!").build();
+			return response;
+		}
+	}
+
+	@Override
+	public Response getDeploymentList() {
+		String uri = "http://camunda:8080/engine-rest/engine/default/deployment/";
+		List<Object> providers = new ArrayList<Object>();
+		providers.add( new JacksonJsonProvider() );
+		WebClient client = WebClient.create(uri, providers).accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
+		List<Deployment> deployments = client.get().readEntity(List.class);
+		Response response = Response.status(Status.OK).entity(deployments).build();
+		return response;
+	}
+
+	@Override
+	public Response getDeploymentXml(String deploymentId) {
+		try {
+			String resourceId = getDeploymentResourceId(deploymentId);
+			String uri = "http://camunda:8080/engine-rest/engine/default/deployment/" + deploymentId + "/resources/" + resourceId + "/data";
+			List<Object> providers = new ArrayList<Object>();
+			providers.add( new JacksonJsonProvider() );
+			WebClient client = WebClient.create(uri, providers);
+			String xml = client.get().readEntity(String.class);
+			JSONObject json = new JSONObject();
+			json.put("xml", xml);
+			Response response = Response.status(Status.OK).entity(json.toString()).build();
+			return response;
+		} catch (JSONException ex) {
+			LOGGER.log(Level.SEVERE, ex.getMessage());
+			Response response = Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal server error!").build();
+			return response;
+		}
+	}
+	
+	private String getDeploymentResourceId(String deploymentId) {
+		String uri = "http://camunda:8080/engine-rest/engine/default/deployment/" + deploymentId + "/resources";
+		List<Object> providers = new ArrayList<Object>();
+		providers.add( new JacksonJsonProvider() );
+		WebClient client = WebClient.create(uri, providers).accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
+		List<LinkedHashMap> resources = client.get().readEntity(List.class);
+		if (resources != null && resources.size() > 0) {
+			for (LinkedHashMap map : resources) {
+				if (((String) map.get("name")).endsWith(".bpmn")) {
+					return (String) map.get("id");
+				}
+			}
+		}
+		return null;
+		
 	}
 
 }

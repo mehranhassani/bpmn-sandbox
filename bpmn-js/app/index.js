@@ -35,11 +35,11 @@ function createNewDiagram() {
   openDiagram(newDiagramXML);
 }
 
-function openDiagramById(key) {
+function openDiagramById(deploymentId) {
 	  $.ajax({
-	      url: apiEndpoint + "/engine-rest/engine/default/process-definition/key/" + key + "/xml"
-	  }).then(function(xml) {
-		  openDiagram((new XMLSerializer()).serializeToString(xml));
+	      url: apiEndpoint + "/engine-rest/engine/default/deployment/" + deploymentId + "/xml"
+	  }).then(function(data) {
+		  openDiagram(data.xml);
 	  });
 	}
 
@@ -86,14 +86,13 @@ function saveBpmnToServer() {
 	$('#info').html( "Saving ..." );
 	bpmnModeler.saveXML({ format: true }, function(err, xml) {
 		$.ajax({
-		    url: apiEndpoint + '/engine-rest/engine/default/deployment/create',
+			url: apiEndpoint + '/engine-rest/engine/default/deployment/create',
 		    dataType: 'json',
 		    type: 'post',
 		    contentType: 'multipart/form-data',
 		    headers: {
+		    	'name':'some nice name',
 		        'deployment-name':'test5.bpmn',
-		        'enable-duplicate-filtering':'true',
-		        'deploy-changed-only-name': 'mytest',
 		        'Content-Type':'multipart/form-data'
 		    },
 		    data: xml,
@@ -170,18 +169,18 @@ $(document).on('ready', function() {
   });
   
   $.ajax({
-      url: apiEndpoint + "/engine-rest/engine/default/process-definition"
+      url: apiEndpoint + "/engine-rest/engine/default/deployment"
   }).then(function(data) {
 	  var items = [];
 	  $.each( data, function( num ) {
-	    items.push( "<a id='myLink" + num + "' href='#'>" + (num + 1) + ". " + data[num].name + "</a><br>" );
+	    items.push( "<a id='myLink" + num + "' href='#'>" + (num + 1) + ". " + data[num].source + "   " + data[num].deploymentTime + "</a><br>" );
 	  });
 	  $( "<div/>", {
 		    "class": "my-new-list",
 		    html: items.join( "" )
 		  }).appendTo( ".diagrams" );
 	  $.each( data, function( num ) {
-		    $('#myLink' + num).click(function(){ openDiagramById(data[num].key); return false; });
+		    $('#myLink' + num).click(function(){ openDiagramById(data[num].id); return false; });
 		  });
   });
 
