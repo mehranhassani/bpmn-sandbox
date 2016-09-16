@@ -143,7 +143,7 @@ public class MiddleWareRestImpl implements DefaultApi {
 
 	@Override
 	public Response getProcessDefinitionList() {
-		String uri = "http://camunda:8080/engine-rest/engine/default/process-definition/";
+		String uri = "http://camunda:8080/engine-rest/engine/default/process-definition?sortBy=name&sortOrder=asc";
 		List<Object> providers = new ArrayList<Object>();
 		providers.add( new JacksonJsonProvider() );
 		WebClient client = WebClient.create(uri, providers).accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
@@ -165,7 +165,7 @@ public class MiddleWareRestImpl implements DefaultApi {
 
 	@Override
 	public Response getTaskList() {
-		String uri = "http://camunda:8080/engine-rest/engine/default/task/";
+		String uri = "http://camunda:8080/engine-rest/engine/default/task?sortBy=created&sortOrder=desc";
 		List<Object> providers = new ArrayList<Object>();
 		providers.add( new JacksonJsonProvider() );
 		WebClient client = WebClient.create(uri, providers).accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
