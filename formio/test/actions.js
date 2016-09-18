@@ -1,4 +1,4 @@
-/* eslint-env mocha */
+/* eslint-env mocha test */
 'use strict';
 
 var request = require('supertest');
