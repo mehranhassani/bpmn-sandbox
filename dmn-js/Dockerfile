@@ -3,7 +3,8 @@ FROM nginx
 # Install Node.js and other dependencies
 RUN apt-get update && \
     apt-get -y install curl git ruby && \
-    curl -sL https://deb.nodesource.com/setup | bash - && \
+    apt-get update && apt-get install -y gnupg && \
+    curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
     apt-get -y install nodejs
 
 # Copy angular files
@@ -20,7 +21,7 @@ ARG BUILD_PROFILE=build
 ENV BUILD_PROFILE ${BUILD_PROFILE}
 
 # Building
-RUN grunt ${BUILD_PROFILE}
+RUN grunt ${BUILD_PROFILE} 
 RUN cp -R /tmp/dist/. /usr/share/nginx/html
 RUN rm -rf /tmp
 WORKDIR /usr/share/nginx/html

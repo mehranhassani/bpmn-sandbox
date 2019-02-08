@@ -2,12 +2,12 @@ FROM tomcat
 
 # Install Java
 RUN mkdir /opt/jdk && cd /opt
-RUN wget --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u5-b13/jdk-8u5-linux-x64.tar.gz
-RUN tar -zxf jdk-8u5-linux-x64.tar.gz -C /opt/jdk
-RUN update-alternatives --install /usr/bin/java java /opt/jdk/jdk1.8.0_05/bin/java 100
-RUN update-alternatives --install /usr/bin/javac javac /opt/jdk/jdk1.8.0_05/bin/javac 100
+RUN wget --header "Cookie: oraclelicense=accept-securebackup-cookie" https://download.oracle.com/otn-pub/java/jdk/8u201-b09/42970487e3af4f5aa5bca3f542482c60/jdk-8u201-linux-x64.tar.gz
+RUN tar -zxf jdk-8u201-linux-x64.tar.gz -C /opt/jdk
+RUN update-alternatives --install /usr/bin/java java /opt/jdk/jdk1.8.0_201/bin/java 100
+RUN update-alternatives --install /usr/bin/javac javac /opt/jdk/jdk1.8.0_201/bin/javac 100
 
-ENV JAVA_HOME /opt/jdk/jdk1.8.0_05
+ENV JAVA_HOME /opt/jdk/jdk1.8.0_201
 
 # Create app directory
 RUN mkdir -p /usr/src/app

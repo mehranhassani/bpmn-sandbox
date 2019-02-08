@@ -3,7 +3,8 @@ FROM nginx
 # Install Node.js and other dependencies
 RUN apt-get update && \
     apt-get -y install curl git ruby && \
-    curl -sL https://deb.nodesource.com/setup | bash - && \
+    apt-get update && apt-get install -y gnupg && \
+    curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
     apt-get -y install nodejs
 
 # Copy angular files

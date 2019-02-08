@@ -269,7 +269,7 @@ module.exports = function(formio, items, done) {
 
       // Download the client.
       download(
-        'https://nodeload.github.com/krixerx/formio-app-formio/zip/master',
+        'https://nodeload.github.com/formio/formio-app-formio/zip/master',
         'client.zip',
         'client',
         done
@@ -400,10 +400,10 @@ module.exports = function(formio, items, done) {
       });
     }
   };
-
+  
   util.log('Installing...');
   //prompt.start();
-  application = 'krixerx/formio-components'; //'formio/formio-app-servicetracker';
+  application = 'formio/formio-app-servicetracker'; //'formio/formio-app-servicetracker';
   async.series([
     //steps.areYouSure,
     //steps.whatApp,
